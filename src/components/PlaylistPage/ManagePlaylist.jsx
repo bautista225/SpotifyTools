@@ -53,11 +53,14 @@ const ManagePlaylist = () => {
   const handleRevert = async (event) => {
     event.preventDefault();
 
-    // Debería tener guardado el orden original antes de hacer el sort 
+    // Debería tener guardado el orden original (guardarlo en localStorage al darle a ordenar por) antes de hacer el sort 
     // e iterar sobre el nuevo poniendo los elementos la posición vieja
     // en base a cada nuevo snapshot.
 
-    const originalTrackList = playlistInfo.tracks.items;
+    const {originalTrackList, snapshot_id} = JSON.parse(window.localStorage.getItem(`ManagePlaylist_OriginalOrder_${playlistUri}`))
+
+    if (!originalTrackList)
+      return alert(`Not previous order available to recover for the playlist ${playlistInfo.name}`)
 
     const newOrder = {
       range_start: 1,
@@ -114,8 +117,10 @@ const ManagePlaylist = () => {
 
     const originalTrackList = playlistInfo.tracks.items;
     const modifiedTrackList = trackList;
-
     let snapshot_id = playlistInfo.snapshot_id;
+
+    window.localStorage.setItem(`ManagePlaylist_OriginalOrder_${playlistUri}`, JSON.stringify({originalTrackList, snapshot_id}))
+
     let updatedTracksInfo = [...originalTrackList];
 
     for (const [index, track] of modifiedTrackList.reverse().entries()) {
@@ -135,26 +140,18 @@ const ManagePlaylist = () => {
         });
         console.log({ oldPosition, index, date: track.added_at, response });
 
+        // Recoger el id de estado de la nueva playlist 
+        // para modificar el orden de la siguiente canción sobre esa.
         snapshot_id = response.snapshot_id;
+
+        // Realizar yo el nuevo orden en local en vez de solicitarlo 
+        // para evitar baneo por horas (retryAfter)!!
         updatedTracksInfo = utils.moveElementInArray(
           updatedTracksInfo,
           oldPosition,
           0
         );
-        // Realizar yo el nuevo orden en vez de solicitarlo!!
 
-        // let tracksInfo = await SpotifyService.getPlaylistInfo(playlistUri);
-        // while (tracksInfo.tracks.items.length < tracksInfo.tracks.total) {
-        //   const { items, next } = await SpotifyService.getPlaylistTracks(
-        //     playlistUri,
-        //     50,
-        //     tracksInfo.tracks.items.length
-        //   );
-
-        //   tracksInfo.tracks.items = tracksInfo.tracks.items.concat(items);
-        //   tracksInfo.tracks.next = next;
-        // }
-        // updatedTracksInfo = tracksInfo.tracks.items;
       } catch (error) {
         if (error.response?.data?.error) {
           console.error(error.response.data.error);
