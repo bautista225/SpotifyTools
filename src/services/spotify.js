@@ -1,5 +1,5 @@
 import axios from "axios";
-import utils from "../utils";
+import * as utils from "../utils";
 
 const baseUrl = "https://api.spotify.com/v1";
 const tokenUrl = "https://accounts.spotify.com/api/token";

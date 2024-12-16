@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import SpotifyService from "../../services/spotify";
-import utils from "../../utils";
+import * as utils from "../../utils";
 
 const ManagePlaylist = () => {
   const [playlistInfo, setPlaylistInfo] = useState();
@@ -42,123 +42,39 @@ const ManagePlaylist = () => {
   const handlePreview = (event) => {
     event.preventDefault();
 
-    const sortedPlaylistTracks = [...playlistInfo.tracks.items].sort(
-      (a, b) => new Date(b.added_at) - new Date(a.added_at)
+    const sortedPlaylistTracks = utils.sortPlaylistTracks(
+      playlistInfo.tracks.items,
+      "MostRecent"
     );
 
     console.log(sortedPlaylistTracks);
     setTrackList(sortedPlaylistTracks);
   };
 
-  const handleRevert = async (event) => {
+  const handleError = (error) => {
+    if (error.response?.data?.error) {
+      console.error(error.response.data.error);
+      if (error.response.data.error.status === 401) navigate("/");
+    } else console.error(error);
+  };
+
+  const handleRevertOrder = async (event) => {
     event.preventDefault();
 
-    // Debería tener guardado el orden original (guardarlo en localStorage al darle a ordenar por) antes de hacer el sort 
-    // e iterar sobre el nuevo poniendo los elementos la posición vieja
-    // en base a cada nuevo snapshot.
+    const { updatedPlaylistInfo, originalTrackList } =
+      await utils.revertPlaylistOrder(playlistInfo, trackList, handleError);
 
-    const {originalTrackList, snapshot_id} = JSON.parse(window.localStorage.getItem(`ManagePlaylist_OriginalOrder_${playlistUri}`))
-
-    if (!originalTrackList)
-      return alert(`Not previous order available to recover for the playlist ${playlistInfo.name}`)
-
-    const newOrder = {
-      range_start: 1,
-      insert_before: 0,
-      range_length: 5,
-    };
-
-    try {
-      const response = await SpotifyService.reorderPlaylistItem({
-        order: newOrder,
-        playlistUri,
-      });
-      // console.log({ index, response });
-    } catch (error) {
-      if (error.response?.data?.error) {
-        console.error(error.response.data.error);
-        if (error.response.data.error.status === 401) navigate("/");
-      } else console.error(error);
-    }
-
-    // let count = 0;
-    // for (const [index, track] of originalTrackList.reverse().entries()) {
-    //   const oldPosition = utils.getTrackOldPosition(track, originalTrackList);
-
-    //   const newOrder = {
-    //     range_start: count,
-    //     insert_before: 0,
-    //     range_length: originalTrackList.length,
-    //     snapshot_id: "AAAArMvavbUacBiJwmewwikZ99RVPLM4",
-    //   };
-
-    //   try {
-    //     const response = await SpotifyService.reorderPlaylistItem({
-    //       order: newOrder,
-    //       playlistUri,
-    //     });
-    //     console.log({ index, response });
-    //   } catch (error) {
-    //     if (error.response?.data?.error) {
-    //       console.error(error.response.data.error);
-    //       if (error.response.data.error.status === 401) navigate("/");
-    //     } else console.error(error);
-    //   }
-
-    //   count++;
-    // }
-
-    console.log("HOLA");
-    setTrackList(playlistInfo.tracks.items);
+    setPlaylistInfo(updatedPlaylistInfo);
+    setTrackList(originalTrackList);
   };
 
   const handlePublishNewOrder = async (event) => {
     event.preventDefault();
 
-    const originalTrackList = playlistInfo.tracks.items;
-    const modifiedTrackList = trackList;
-    let snapshot_id = playlistInfo.snapshot_id;
-
-    window.localStorage.setItem(`ManagePlaylist_OriginalOrder_${playlistUri}`, JSON.stringify({originalTrackList, snapshot_id}))
-
-    let updatedTracksInfo = [...originalTrackList];
-
-    for (const [index, track] of modifiedTrackList.reverse().entries()) {
-      const oldPosition = utils.getTrackOldPosition(track, updatedTracksInfo);
-
-      const newOrder = {
-        range_start: oldPosition,
-        insert_before: 0,
-        range_length: 1,
-        snapshot_id,
-      };
-
-      try {
-        const response = await SpotifyService.reorderPlaylistItem({
-          order: newOrder,
-          playlistUri,
-        });
-        console.log({ oldPosition, index, date: track.added_at, response });
-
-        // Recoger el id de estado de la nueva playlist 
-        // para modificar el orden de la siguiente canción sobre esa.
-        snapshot_id = response.snapshot_id;
-
-        // Realizar yo el nuevo orden en local en vez de solicitarlo 
-        // para evitar baneo por horas (retryAfter)!!
-        updatedTracksInfo = utils.moveElementInArray(
-          updatedTracksInfo,
-          oldPosition,
-          0
-        );
-
-      } catch (error) {
-        if (error.response?.data?.error) {
-          console.error(error.response.data.error);
-          if (error.response.data.error.status === 401) navigate("/");
-        } else console.error(error);
-      }
-    }
+    const { updatedPlaylistInfo, modifiedTrackList } =
+      await utils.postNewPlaylistOrder(playlistInfo, trackList, handleError);
+    
+    setPlaylistInfo(updatedPlaylistInfo);
   };
 
   if (!playlistInfo) return <div>Loading tracklists...</div>;
@@ -169,7 +85,7 @@ const ManagePlaylist = () => {
       <p>Number of songs: {playlistInfo.tracks.total}</p>
       <button onClick={handlePreview}>Order by most recent added</button>
       <button onClick={handlePublishNewOrder}>Publish new order</button>
-      <button onClick={handleRevert}>Revert order change</button>
+      <button onClick={handleRevertOrder}>Revert order change</button>
       <ol>
         {trackList.map((t) => (
           <li key={t.track.id}>

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SpotifyService from "../../services/spotify";
-import utils from "../../utils";
+import * as utils from "../../utils";
 
 const AuthenticationPage = () => {
   const [token, setToken] = useState();
