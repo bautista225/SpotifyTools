@@ -1,30 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import SpotifyService from "../../services/spotify";
 import * as utils from "../../utils";
+import { useDispatch, useSelector } from "react-redux";
+import { saveAuthenticatedSession } from "../../reducers/session";
 
 const AuthenticationPage = () => {
-  const [token, setToken] = useState();
+  const dispatch = useDispatch();
+  const session = useSelector((state) => state.session);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (token) return;
+    if (session.access_token) return navigate("/profile");
 
-    const accessToken = utils.getAuthorizationTokenFromHash();
-    if (accessToken) {
-      SpotifyService.setToken(accessToken);
-      localStorage.setItem("token", accessToken);
-      setToken(accessToken);
-    }
-  }, [token]);
-
-  useEffect(() => {
-    if (token) {
+    const tokenInfo = utils.getAuthorizationTokenFromHash();
+    console.log(tokenInfo)
+    if (tokenInfo.access_token) {
+      dispatch(saveAuthenticatedSession(tokenInfo));
       navigate("/profile");
     } else {
       navigate("/");
     }
-  }, [token, navigate]);
+  }, [session.access_token]);
 };
 
 export default AuthenticationPage;

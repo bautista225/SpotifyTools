@@ -1,80 +1,34 @@
-import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import SpotifyService from "../../services/spotify";
-import * as utils from "../../utils";
+import { useParams } from "react-router-dom";
+import usePlaylistInfo from "../../hooks/usePlaylistInfo";
 
 const ManagePlaylist = () => {
-  const [playlistInfo, setPlaylistInfo] = useState();
-  const [trackList, setTrackList] = useState([]);
   const params = useParams();
   const playlistUri = params.id;
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    (async () => {
-      try {
-        let tracksInfo = await SpotifyService.getPlaylistInfo(playlistUri);
-        console.log(tracksInfo);
-        while (tracksInfo.tracks.items.length < tracksInfo.tracks.total) {
-          const { items, next } = await SpotifyService.getPlaylistTracks(
-            playlistUri,
-            50,
-            tracksInfo.tracks.items.length
-          );
-
-          tracksInfo.tracks.items = tracksInfo.tracks.items.concat(items);
-          tracksInfo.tracks.next = next;
-        }
-
-        console.log({ tracksInfo });
-
-        setPlaylistInfo(tracksInfo);
-        setTrackList(tracksInfo.tracks.items);
-      } catch (error) {
-        if (error.response?.data?.error) {
-          console.error(error.response.data.error);
-          if (error.response.data.error.status === 401) navigate("/");
-        } else console.error(error);
-      }
-    })();
-  }, [navigate, playlistUri]);
+  const [
+    playlistInfo,
+    trackList,
+    loadPlaylistInfo,
+    virtualSortTracks,
+    postVirtualOrder,
+    revertOrder,
+  ] = usePlaylistInfo(playlistUri);
 
   const handlePreview = (event) => {
     event.preventDefault();
 
-    const sortedPlaylistTracks = utils.sortPlaylistTracks(
-      playlistInfo.tracks.items,
-      "MostRecent"
-    );
-
-    console.log(sortedPlaylistTracks);
-    setTrackList(sortedPlaylistTracks);
-  };
-
-  const handleError = (error) => {
-    if (error.response?.data?.error) {
-      console.error(error.response.data.error);
-      if (error.response.data.error.status === 401) navigate("/");
-    } else console.error(error);
+    virtualSortTracks("MostRecent");
   };
 
   const handleRevertOrder = async (event) => {
     event.preventDefault();
 
-    const { updatedPlaylistInfo, originalTrackList } =
-      await utils.revertPlaylistOrder(playlistInfo, trackList, handleError);
-
-    setPlaylistInfo(updatedPlaylistInfo);
-    setTrackList(originalTrackList);
+    await revertOrder();
   };
 
   const handlePublishNewOrder = async (event) => {
     event.preventDefault();
 
-    const { updatedPlaylistInfo, modifiedTrackList } =
-      await utils.postNewPlaylistOrder(playlistInfo, trackList, handleError);
-    
-    setPlaylistInfo(updatedPlaylistInfo);
+    await postVirtualOrder();
   };
 
   if (!playlistInfo) return <div>Loading tracklists...</div>;

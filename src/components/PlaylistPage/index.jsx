@@ -1,37 +1,9 @@
-import { useEffect, useState } from "react";
-import SpotifyService from "../../services/spotify";
 import { useNavigate } from "react-router-dom";
+import { useUserPlaylists } from "../../hooks";
 
 const PlaylistPage = () => {
   const navigate = useNavigate("/");
-  const [userPlaylists, setUserPlaylists] = useState();
-
-  useEffect(() => {
-    (async () => {
-      try {
-        let playlistsInfo = await SpotifyService.getUserPlaylists(50);
-
-        while (playlistsInfo.items.length < playlistsInfo.total) {
-          const { items, next } = await SpotifyService.getUserPlaylists(
-            50,
-            playlistsInfo.items.length
-          );
-
-          playlistsInfo.items = playlistsInfo.items.concat(items);
-          playlistsInfo.next = next;
-        }
-
-        console.log({ playlistsInfo });
-
-        setUserPlaylists(playlistsInfo);
-      } catch (error) {
-        if (error.response?.data?.error) {
-          console.error(error.response.data.error);
-          if (error.response.data.error.status === 401) navigate("/");
-        } else console.error(error);
-      }
-    })();
-  }, [navigate]);
+  const [userPlaylists] = useUserPlaylists();
 
   if (!userPlaylists) return <div>Loading user plalists...</div>;
 

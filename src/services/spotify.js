@@ -2,36 +2,22 @@ import axios from "axios";
 import * as utils from "../utils";
 
 const baseUrl = "https://api.spotify.com/v1";
-const tokenUrl = "https://accounts.spotify.com/api/token";
 
-let token = null;
-
-const getToken = () => {
-  return token || localStorage.getItem("token");
+let tokenInfo = {
+  access_token: null,
+  token_type: null,
+  expires_in: 0,
 };
 
-const setToken = (newToken) => {
-  token = newToken;
-};
-
-const getUserToken = async (client_id, client_secret) => {
-  const auth_token = window.btoa(`${client_id}:${client_secret}`);
-  const data = utils.encodeQueryParams({ grant_type: "client_credentials" });
-
-  const config = {
-    headers: {
-      Authorization: `Basic ${auth_token}`,
-      "Content-Type": "application/x-www-form-urlencoded",
-    },
-  };
-
-  const response = await axios.post(tokenUrl, data, config);
-  return response.data;
+const setTokenInfo = (newTokenInfo) => {
+  tokenInfo = newTokenInfo;
 };
 
 const getUserProfile = async () => {
   const config = {
-    headers: { Authorization: `Bearer ${getToken()}` },
+    headers: {
+      Authorization: `${tokenInfo.token_type} ${tokenInfo.access_token}`,
+    },
   };
 
   const response = await axios.get(`${baseUrl}/me`, config);
@@ -40,7 +26,9 @@ const getUserProfile = async () => {
 
 const getUserTopTracks = async (time_range, limit, offset = 0) => {
   const config = {
-    headers: { Authorization: `Bearer ${getToken()}` },
+    headers: {
+      Authorization: `${tokenInfo.token_type} ${tokenInfo.access_token}`,
+    },
   };
 
   const params = utils.encodeQueryParams({ time_range, limit, offset });
@@ -54,7 +42,9 @@ const getUserTopTracks = async (time_range, limit, offset = 0) => {
 
 const getUserPlaylists = async (limit, offset = 0) => {
   const config = {
-    headers: { Authorization: `Bearer ${getToken()}` },
+    headers: {
+      Authorization: `${tokenInfo.token_type} ${tokenInfo.access_token}`,
+    },
   };
 
   const params = utils.encodeQueryParams({ limit, offset });
@@ -65,7 +55,9 @@ const getUserPlaylists = async (limit, offset = 0) => {
 
 const getPlaylistInfo = async (playlistUri) => {
   const config = {
-    headers: { Authorization: `Bearer ${getToken()}` },
+    headers: {
+      Authorization: `${tokenInfo.token_type} ${tokenInfo.access_token}`,
+    },
   };
 
   const response = await axios.get(
@@ -77,7 +69,9 @@ const getPlaylistInfo = async (playlistUri) => {
 
 const getPlaylistTracks = async (playlistUri, limit, offset) => {
   const config = {
-    headers: { Authorization: `Bearer ${getToken()}` },
+    headers: {
+      Authorization: `${tokenInfo.token_type} ${tokenInfo.access_token}`,
+    },
   };
 
   const params = utils.encodeQueryParams({ limit, offset });
@@ -91,7 +85,9 @@ const getPlaylistTracks = async (playlistUri, limit, offset) => {
 
 const reorderPlaylistItem = async (trackItemInfo) => {
   const config = {
-    headers: { Authorization: `Bearer ${getToken()}` },
+    headers: {
+      Authorization: `${tokenInfo.token_type} ${tokenInfo.access_token}`,
+    },
   };
 
   const response = await axios.put(
@@ -103,8 +99,7 @@ const reorderPlaylistItem = async (trackItemInfo) => {
 };
 
 export default {
-  setToken,
-  getUserToken,
+  setTokenInfo,
   getUserProfile,
   getUserTopTracks,
   getPlaylistInfo,
