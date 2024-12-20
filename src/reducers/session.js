@@ -6,6 +6,7 @@ const initialState = {
   access_token: null,
   token_type: null,
   expires_in: 0,
+  expiresAt: 0,
 };
 
 const sessionSlice = createSlice({

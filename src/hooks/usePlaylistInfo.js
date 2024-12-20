@@ -110,7 +110,7 @@ const revertPlaylistOrder = async (
       `Not previous order available to recover for the playlist ${playlistInfo.name}`
     );
 
-  console.log('this is: ', JSON.parse(localStorageItem));
+  console.log("this is: ", JSON.parse(localStorageItem));
 
   const { originalTrackList, old_snapshot_id } = JSON.parse(localStorageItem);
   let { snapshot_id } = await SpotifyService.getPlaylistInfo(playlistUri);
@@ -164,7 +164,7 @@ const usePlaylistInfo = (playlistUri) => {
       .then((playlistInfo) => {
         console.log({ playlistInfo });
         setPlaylistInfo(playlistInfo);
-        setTrackList([...playlistInfo.tracks.items])
+        setTrackList([...playlistInfo.tracks.items]);
       })
       .catch((error) => {
         handleError(error);
@@ -182,6 +182,10 @@ const usePlaylistInfo = (playlistUri) => {
   };
 
   const revertOrder = async () => {
+    if (SpotifyService.hasTokenExpired()) {
+      return handleError(SpotifyService.TOKEN_EXPIRATION_ERROR);
+    }
+
     const { updatedPlaylistInfo, originalTrackList } =
       await revertPlaylistOrder(playlistInfo, trackList, handleError);
 
@@ -190,6 +194,10 @@ const usePlaylistInfo = (playlistUri) => {
   };
 
   const postVirtualOrder = async () => {
+    if (SpotifyService.hasTokenExpired()) {
+      return handleError(SpotifyService.TOKEN_EXPIRATION_ERROR);
+    }
+
     const { updatedPlaylistInfo, modifiedTrackList } =
       await postNewPlaylistOrder(playlistInfo, trackList, handleError);
 
@@ -201,7 +209,14 @@ const usePlaylistInfo = (playlistUri) => {
     loadPlaylistInfo();
   }, []);
 
-  return [playlistInfo, trackList, loadPlaylistInfo, virtualSortTracks, postVirtualOrder, revertOrder];
+  return [
+    playlistInfo,
+    trackList,
+    loadPlaylistInfo,
+    virtualSortTracks,
+    postVirtualOrder,
+    revertOrder,
+  ];
 };
 
 export default usePlaylistInfo;

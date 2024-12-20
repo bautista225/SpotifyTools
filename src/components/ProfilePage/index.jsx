@@ -26,7 +26,7 @@ const ProfilePage = () => {
       <div>
         <button onClick={() => navigate("/playlists")}>Review playlists</button>
         <p>
-          Your have listened {userTopTracks.total} tracks the last year.
+          Your have listened {userTopTracks.total} tracks during the last year.
         </p>{" "}
         <p>Your top 10 are:</p>
         <ol>

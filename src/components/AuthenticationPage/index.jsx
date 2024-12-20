@@ -8,7 +8,7 @@ const AuthenticationPage = () => {
   const dispatch = useDispatch();
   const session = useSelector((state) => state.session);
   const navigate = useNavigate();
-
+  console.log(session)
   useEffect(() => {
     if (session.access_token) return navigate("/profile");
 

@@ -2,15 +2,21 @@ import axios from "axios";
 import * as utils from "../utils";
 
 const baseUrl = "https://api.spotify.com/v1";
+const TOKEN_EXPIRATION_ERROR = { status: 401, message: "Token expired" };
 
 let tokenInfo = {
   access_token: null,
   token_type: null,
   expires_in: 0,
+  expiresAt: 0,
 };
 
 const setTokenInfo = (newTokenInfo) => {
   tokenInfo = newTokenInfo;
+};
+
+const hasTokenExpired = (margin = 10 * 60) => {
+  return tokenInfo.expiresAt - margin < Date.now();
 };
 
 const getUserProfile = async () => {
@@ -100,6 +106,8 @@ const reorderPlaylistItem = async (trackItemInfo) => {
 
 export default {
   setTokenInfo,
+  hasTokenExpired,
+  TOKEN_EXPIRATION_ERROR,
   getUserProfile,
   getUserTopTracks,
   getPlaylistInfo,

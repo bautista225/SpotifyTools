@@ -26,6 +26,15 @@ export const getTokenAuthorizationUrl = () => {
   return `https://accounts.spotify.com/authorize?${encodeQueryParams(params)}`;
 };
 
+const parseExpiresInToDate = (expires_in) => {
+  const expiresIn = parseInt(expires_in) || 0
+  if (expiresIn === 0) return 0
+
+  const dateNowSeconds = Date.now() / 1000
+
+  return dateNowSeconds + expiresIn
+}
+
 export const getAuthorizationTokenFromHash = () => {
   console.log('aqui')
   const hash = window.location.hash;
@@ -36,6 +45,7 @@ export const getAuthorizationTokenFromHash = () => {
     access_token: params.get("access_token"),
     token_type: params.get("token_type"),
     expires_in: parseInt(params.get("expires_in")) || 0,
+    expiresAt: parseExpiresInToDate(params.get("expires_in")),
   };
   return tokenInfo;
 };

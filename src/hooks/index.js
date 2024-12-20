@@ -17,13 +17,18 @@ export const useErrorHandler = () => {
   const dispatch = useDispatch();
 
   const handleError = (error) => {
-    if (error.response?.status === 429) {
+    if (error.status === 401) {
+      console.log(error.message)
+      dispatch(logoutSession());
+      navigate("/");
+    } else if (error.response?.status === 429) {
       const retryAfter = error.response.headers["retry-after"];
       console.error(`Rate limit exceeded. Retry after ${retryAfter} seconds.`);
     } else if (error.response?.data?.error) {
       console.error(error.response.data.error);
-      const { status } = error.response.data.error;
+      const { status, message } = error.response.data.error;
       if (status === 401) {
+        console.log(message)
         dispatch(logoutSession());
         navigate("/");
       }
