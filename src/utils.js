@@ -10,7 +10,7 @@ export const getTokenAuthorizationUrl = () => {
   const params = {
     client_id: import.meta.env.VITE_CLIENT_ID,
     response_type: "token",
-    redirect_uri: import.meta.env.VITE_AUTHENTICATION_REDIRECT_URI,
+    redirect_uri: import.meta.env.DEV ? import.meta.env.VITE_AUTHENTICATION_REDIRECT_URI : 'https://bautista225.github.io/SpotifyTools/',
     scope: `
         playlist-read-private 
         playlist-read-collaborative 
