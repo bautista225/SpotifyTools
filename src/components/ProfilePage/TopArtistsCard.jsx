@@ -53,7 +53,7 @@ const TopArtistsCard = () => {
   };
 
   return (
-    <div className="h-100 px-5 py-3 bg-light rounded-3">
+    <div className="h-100 px-4 py-3 bg-light rounded-3">
       <div className="d-flex justify-content-center align-items-center my-4">
         <p className="fw-semibold m-0 text-nowrap me-3">Top 10 artists from</p>
         <select
