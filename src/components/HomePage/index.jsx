@@ -1,14 +1,14 @@
-import * as utils from "../../utils";
+import ConnectWithSpotifyButton from "./ConnectWithSpotifyButton";
 
 const Home = () => (
-  <div>
-    <h2>
-      Welcome to Spotify Tools!
-    </h2>
-    <p>
-      Explore and manage your Spotify playlists and profile with ease.
-    </p>
-    <a href={utils.getTokenAuthorizationUrl()}>Connect with Spotify</a>
+  <div className="d-flex justify-content-center align-items-center vh-100">
+    <div className="text-center">
+      <h1 className="display-1">Welcome to Spotify Tools!</h1>
+      <h2 className="display-6">
+        Explore your profile stats and manage your playlists with ease.
+      </h2>
+      <ConnectWithSpotifyButton />
+    </div>
   </div>
 );
 

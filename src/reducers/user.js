@@ -20,7 +20,18 @@ export const { setUser, removeUser } = userSlice.actions;
 
 export const initializeUser = () => {
   return async (dispatch) => {
-    const user = await SpotifyService.getUserProfile();
+    const spotifyUser = await SpotifyService.getUserProfile();
+
+    const user = {
+      country: spotifyUser.country,
+      name: spotifyUser.display_name,
+      email: spotifyUser.email,
+      numberOfFollowers: spotifyUser.followers.total,
+      id: spotifyUser.id,
+      avatarImage: spotifyUser.images,
+      product: spotifyUser.product,
+    };
+
     dispatch(setUser(user));
   };
 };

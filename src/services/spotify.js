@@ -16,7 +16,7 @@ const setTokenInfo = (newTokenInfo) => {
 };
 
 const hasTokenExpired = (margin = 10 * 60) => {
-  return tokenInfo.expiresAt - margin < Date.now();
+  return tokenInfo.expiresAt - margin < (Date.now() / 1000);
 };
 
 const getUserProfile = async () => {
@@ -41,6 +41,22 @@ const getUserTopTracks = async (time_range, limit, offset = 0) => {
 
   const response = await axios.get(
     `${baseUrl}/me/top/tracks?${params}`,
+    config
+  );
+  return response.data;
+};
+
+const getUserTopArtists = async (time_range, limit, offset = 0) => {
+  const config = {
+    headers: {
+      Authorization: `${tokenInfo.token_type} ${tokenInfo.access_token}`,
+    },
+  };
+
+  const params = utils.encodeQueryParams({ time_range, limit, offset });
+
+  const response = await axios.get(
+    `${baseUrl}/me/top/artists?${params}`,
     config
   );
   return response.data;
@@ -110,6 +126,7 @@ export default {
   TOKEN_EXPIRATION_ERROR,
   getUserProfile,
   getUserTopTracks,
+  getUserTopArtists,
   getPlaylistInfo,
   getPlaylistTracks,
   reorderPlaylistItem,

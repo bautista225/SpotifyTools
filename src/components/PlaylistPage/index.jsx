@@ -10,8 +10,8 @@ const PlaylistPage = () => {
   console.log(userPlaylists);
 
   return (
-    <>
-      <h1>Number of playlists: {userPlaylists.total}</h1>
+    <div className="mt-5 pt-4">
+      <h1>You have a total of {userPlaylists.total} playlists</h1>
       <ol>
         {userPlaylists.items.map((pl) => (
           <li key={pl.id}>
@@ -45,7 +45,7 @@ const PlaylistPage = () => {
           </li>
         ))}
       </ol>
-    </>
+    </div>
   );
 };
 

@@ -1,63 +1,80 @@
 import { useNavigate } from "react-router-dom";
-import { useUserProfile, useUserTopTracks } from "../../hooks";
+import { useUserProfile } from "../../hooks";
+import { Image } from "react-bootstrap";
+import TopTracksCard from "./TopTracksCard";
+import TopArtistsCard from "./TopArtistsCard";
+import ProfileInfoSkeleton from "./ProfileInfoSkeleton";
+import FooterBar from "../FooterBar";
 
-const ProfilePage = () => {
-  const [userProfile, loadUserProfile] = useUserProfile();
-  const [userTopTracks, loadUserTopTracks] = useUserTopTracks("long_term", 10);
+const ProfileInfo = ({ userProfile }) => {
   const navigate = useNavigate();
 
-  if (!userProfile || !userTopTracks) return <div>Loading user profile...</div>;
+  return (
+    <div className="row">
+      <div className="col-md-6 text-center">
+        <Image
+          src={userProfile.images[0].url}
+          roundedCircle
+          fluid
+          style={{
+            width: "250px",
+            height: "250px",
+            objectFit: "cover", // Mantiene las proporciones y recorta las partes sobrantes.
+          }}
+        />
+      </div>
+      <div className="col-md-6 text-center text-md-start align-content-center">
+        <h1>Welcome, {userProfile.display_name}!</h1>
+        <p>
+          Subscription: <em>{userProfile.product}</em>
+        </p>
+        <p>
+          Followers: <em>{userProfile.followers.total}</em>
+        </p>
+        <p>
+          Country: <em>{userProfile.country}</em>
+        </p>
+        <p>
+          Your have listened userTopTracks.total tracks during the last year.
+        </p>
 
-  console.log(userProfile);
+        <div>
+          <button
+            className="btn btn-md btn-outline-dark my-2 mx-1 rounded-pill"
+            onClick={() => navigate("/playlists")}
+          >
+            <i className="bi bi-music-note-list"></i> Manage playlists
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ProfilePage = () => {
+  const [userProfile, isUserProfileLoading, loadUserProfile] = useUserProfile();
+
+  console.log("userprofile: ", userProfile);
 
   return (
-    <>
-      <h1>Welcome, {userProfile.display_name}!</h1>
-      <img src={userProfile.images[0].url} />
-      <p>
-        Subscription: <em>{userProfile.product}</em>
-      </p>
-      <p>
-        Followers: <em>{userProfile.followers.total}</em>
-      </p>
-      <p>
-        Country: <em>{userProfile.country}</em>
-      </p>
-      <div>
-        <button onClick={() => navigate("/playlists")}>Review playlists</button>
-        <p>
-          Your have listened {userTopTracks.total} tracks during the last year.
-        </p>{" "}
-        <p>Your top 10 are:</p>
-        <ol>
-          {userTopTracks.items?.map((trackInfo) => (
-            <li key={trackInfo.id}>
-              <div style={{ display: "flex", flexDirection: "row" }}>
-                <img
-                  src={
-                    trackInfo.album.images[0]?.url ||
-                    "https://via.placeholder.com/64"
-                  }
-                  width={60}
-                  height={60}
-                  alt={`${trackInfo.name} cover`}
-                />
-                <div
-                  style={{
-                    marginLeft: "10px",
-                  }}
-                >
-                  <p>{trackInfo.name}</p>
-                  <p>
-                    {trackInfo.artists.map((artist) => artist.name).join(", ")}
-                  </p>
-                </div>
-              </div>
-            </li>
-          ))}
-        </ol>
+    <div className="container mt-5 pt-4">
+      <div className="p-5 mb-4 bg-light rounded-3">
+        {isUserProfileLoading && <ProfileInfoSkeleton />}
+        {!isUserProfileLoading && <ProfileInfo userProfile={userProfile} />}
       </div>
-    </>
+
+      <div className="row g-4 align-items-md-stretch">
+        <div className="col-md-6">
+          <TopTracksCard />
+        </div>
+
+        <div className="col-md-6">
+          <TopArtistsCard />
+        </div>
+      </div>
+
+      <FooterBar />
+    </div>
   );
 };
 

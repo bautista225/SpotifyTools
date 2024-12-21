@@ -34,6 +34,7 @@ export const saveAuthenticatedSession = (session) => {
 
 export const logoutSession = () => {
   return (dispatch) => {
+    console.log('Limpiando sesion')
     storageService.removeSession();
     SpotifyService.setTokenInfo(initialState);
     dispatch(removeSession());
@@ -43,10 +44,15 @@ export const logoutSession = () => {
 export const restartSession = () => {
   return (dispatch) => {
     const session = storageService.loadSession();
-    console.log('La sesión es:', session)
+    console.log("La sesión es:", session);
     if (session) {
       SpotifyService.setTokenInfo(session);
-      dispatch(setSession(session));
+      if (SpotifyService.hasTokenExpired()) {
+        console.log('Voy a limpiar la sesion por token cadudado')
+        dispatch(logoutSession())
+      } else {
+        dispatch(setSession(session));
+      }
     }
   };
 };
