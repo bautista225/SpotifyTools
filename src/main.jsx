@@ -8,7 +8,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 
 createRoot(document.getElementById("root")).render(
   <Provider store={store}>
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.DEV ? '/' : '/SpotifyTools/'}>
       <App />
     </BrowserRouter>
   </Provider>
