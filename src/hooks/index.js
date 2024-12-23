@@ -7,9 +7,14 @@ import { initializeUser, logoutUser } from "../reducers/user";
 
 export const useSessionInitialization = () => {
   const dispatch = useDispatch();
+  const handleError = useErrorHandler();
+
+  const onExpiredSession = () => {
+    handleError(SpotifyService.TOKEN_EXPIRATION_ERROR);
+  };
 
   return () => {
-    dispatch(restartSession());
+    dispatch(restartSession(onExpiredSession));
   };
 };
 

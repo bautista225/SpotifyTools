@@ -8,7 +8,6 @@ import { useSessionInitialization, useUserInitialization } from "./hooks";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import NavBar from "./components/NavBar";
-import FooterBar from "./components/FooterBar";
 
 function App() {
   const { session, user } = useSelector(({ session, user }) => ({

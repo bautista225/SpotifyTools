@@ -41,7 +41,7 @@ export const logoutSession = () => {
   };
 };
 
-export const restartSession = () => {
+export const restartSession = (onExpiredSession) => {
   return (dispatch) => {
     const session = storageService.loadSession();
     console.log("La sesión es:", session);
@@ -50,6 +50,7 @@ export const restartSession = () => {
       if (SpotifyService.hasTokenExpired()) {
         console.log('Voy a limpiar la sesion por token cadudado')
         dispatch(logoutSession())
+        onExpiredSession()
       } else {
         dispatch(setSession(session));
       }
