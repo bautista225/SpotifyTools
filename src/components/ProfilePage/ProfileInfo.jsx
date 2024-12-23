@@ -18,9 +18,9 @@ const timeRange = {
 const ProfileInfo = () => {
   const [userProfile, isUserProfileLoading, loadUserProfile] = useUserProfile();
   const [userTopTracks, isUserTopTracksLoading, loadUserTopTracks] =
-    useUserTopTracks("long_term", 10);
+    useUserTopTracks(timeRange.long_term.value, 10);
   const [userTopArtists, isUserTopArtistsLoading, loadUserTopArtists] =
-    useUserTopArtists("long_term", 10);
+    useUserTopArtists(timeRange.long_term.value, 10);
   const [currentTimeRange, setCurrentTimeRange] = useState("long_term");
 
   const navigate = useNavigate();
@@ -100,7 +100,7 @@ const ProfileInfo = () => {
           </div>
         </div>
 
-        <div className="mt-4">
+        <div className="mt-4 text-center">
           <button
             className="btn btn-md btn-outline-dark rounded-pill"
             onClick={() => navigate("/playlists")}
