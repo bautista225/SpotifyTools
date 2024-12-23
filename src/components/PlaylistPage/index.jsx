@@ -1,12 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { useUserPlaylists } from "../../hooks";
 import FooterBar from "../FooterBar/index";
+import PlaylistPageSkeleton from "./PlaylistPageSkeleton";
 
 const PlaylistPage = () => {
   const navigate = useNavigate("/");
   const [userPlaylists] = useUserPlaylists();
 
-  if (!userPlaylists) return <div>Loading user plalists...</div>;
+  if (!userPlaylists)
+    return (
+      <>
+        <div className="container mt-5 pt-4">
+          <PlaylistPageSkeleton />
+          <FooterBar />
+        </div>
+      </>
+    );
 
   console.log(userPlaylists);
 
