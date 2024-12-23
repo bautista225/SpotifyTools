@@ -6,6 +6,14 @@ import {
   useUserTopArtists,
   useUserTopTracks,
 } from "../../hooks";
+import { useState } from "react";
+import ProfileInfoBadgeSkeleton from "./ProfileInfoBadgeSkeleton";
+
+const timeRange = {
+  long_term: { value: "long_term", label: "last year" },
+  medium_term: { value: "medium_term", label: "6 months" },
+  short_term: { value: "short_term", label: "4 weeks" },
+};
 
 const ProfileInfo = () => {
   const [userProfile, isUserProfileLoading, loadUserProfile] = useUserProfile();
@@ -13,6 +21,7 @@ const ProfileInfo = () => {
     useUserTopTracks("long_term", 10);
   const [userTopArtists, isUserTopArtistsLoading, loadUserTopArtists] =
     useUserTopArtists("long_term", 10);
+  const [currentTimeRange, setCurrentTimeRange] = useState("long_term");
 
   const navigate = useNavigate();
 
@@ -21,6 +30,18 @@ const ProfileInfo = () => {
   console.log("ProfileInfo - userTopArtists: ", userTopArtists);
 
   if (isUserProfileLoading) return <ProfileInfoSkeleton />;
+
+  const handleChangeTimeRange = (event) => {
+    event.preventDefault();
+
+    const currentIndex = Object.keys(timeRange).indexOf(currentTimeRange);
+    const newIndex = (currentIndex + 1) % Object.keys(timeRange).length;
+    const newValue = Object.keys(timeRange)[newIndex];
+
+    loadUserTopTracks(newValue, 10);
+    loadUserTopArtists(newValue, 10);
+    setCurrentTimeRange(newValue);
+  };
 
   return (
     <div className="row">
@@ -52,79 +73,32 @@ const ProfileInfo = () => {
               <div className="fw-semibold">{userProfile.country}</div>
               <div>Country</div>
             </div>
-            <div className="col">
-              <div className="fw-semibold">Last year</div>
+            <div className="col" onClick={handleChangeTimeRange}>
+              <div className="fw-semibold">
+                {timeRange[currentTimeRange].label}
+              </div>
               <div>Listened</div>
             </div>
             <div className="col">
-              <div className="fw-semibold">{userTopTracks?.total}</div>
-              <div>Tracks</div>
+              {isUserTopTracksLoading && <ProfileInfoBadgeSkeleton />}
+              {!isUserTopTracksLoading && (
+                <>
+                  <div className="fw-semibold">{userTopTracks?.total}</div>
+                  <div>Tracks</div>
+                </>
+              )}
             </div>
             <div className="col">
-              <div className="fw-semibold">{userTopArtists?.total}</div>
-              <div>Artists</div>
+              {isUserTopArtistsLoading && <ProfileInfoBadgeSkeleton />}
+              {!isUserTopArtistsLoading && (
+                <>
+                  <div className="fw-semibold">{userTopArtists?.total}</div>
+                  <div>Artists</div>
+                </>
+              )}
             </div>
           </div>
         </div>
-        {/* <div className="d-flex flex-row">
-          <div className="d-flex flex-column align-items-center">
-            <div className="fw-semibold">{userProfile.product}</div>
-            <div>Subscription</div>
-          </div>
-          <div className="d-flex flex-column align-items-center">
-            <div className="fw-semibold">{userProfile.followers.total}</div>
-            <div>Followers</div>
-          </div>
-          <div className="d-flex flex-column align-items-center">
-            <div className="fw-semibold">{userProfile.country}</div>
-            <div>Country</div>
-          </div>
-        </div>
-        <div className="d-flex flex-row justify-content-around">
-          <div className="d-flex flex-column align-items-center">
-            <div className="fw-semibold">Last year</div>
-            <div>Listened</div>
-          </div>
-          <div className="d-flex flex-column align-items-center">
-            <div className="fw-semibold">{userTopTracks?.total}</div>
-            <div>Tracks</div>
-          </div>
-          <div className="d-flex flex-column align-items-center">
-            <div className="fw-semibold">{userTopArtists?.total}</div>
-            <div>Artists</div>
-          </div>
-        </div> */}
-
-        {/* <div className="d-flex flex-column justify-content-between">
-          <div className="">
-            <div className="col d-flex flex-column align-items-center justify-content-center">
-              <div className="fw-semibold">{userProfile.product}</div>
-              <div>Subscription</div>
-            </div>
-            <div className="col d-flex flex-column align-items-center justify-content-center">
-              <div className="fw-semibold">{userProfile.followers.total}</div>
-              <div>Followers</div>
-            </div>
-            <div className="col d-flex flex-column align-items-center justify-content-center">
-              <div className="fw-semibold">{userProfile.country}</div>
-              <div>Country</div>
-            </div>
-          </div>
-          <div className="">
-            <div className="col d-flex flex-column align-items-center justify-content-center">
-              <div className="fw-semibold">Last year</div>
-              <div>Listened</div>
-            </div>
-            <div className="col d-flex flex-column align-items-center justify-content-center">
-              <div className="fw-semibold">{userTopTracks.total}</div>
-              <div>Tracks</div>
-            </div>
-            <div className="col d-flex flex-column align-items-center justify-content-center">
-              <div className="fw-semibold">{userTopArtists.total}</div>
-              <div>Artists</div>
-            </div>
-          </div>
-        </div> */}
 
         <div className="mt-4">
           <button
