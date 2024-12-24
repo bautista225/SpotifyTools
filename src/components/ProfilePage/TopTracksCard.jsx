@@ -15,23 +15,31 @@ const TopTracksList = ({ userTopTracks }) => (
         key={trackInfo.id}
         className="list-group-item text-bg-light d-flex align-items-center"
       >
-        <div className="text-center me-3" style={{ width: "1rem" }}>
-          {index + 1}
-        </div>
-        <img
-          src={
-            trackInfo.album.images[0]?.url || "https://via.placeholder.com/64"
-          }
-          width={60}
-          height={60}
-          alt={`${trackInfo.name} cover`}
-          className="me-3 rounded flex-shrink-0"
-        />
-        <div className="flex-grow-1">
-          <p className="mb-1 fw-bold">{trackInfo.name}</p>
-          <p className="mb-0 text-muted">
-            {trackInfo.artists.map((artist) => artist.name).join(", ")}
-          </p>
+        <div className="d-flex align-items-center">
+          <div
+            className="text-center me-3 flex-shrink-0"
+            style={{ width: "0.7rem" }}
+          >
+            {index + 1}
+          </div>
+          <div className="flex-shrink-0">
+            <img
+              src={
+                trackInfo.album.images[0]?.url ||
+                "https://via.placeholder.com/64"
+              }
+              width={60}
+              height={60}
+              alt={`${trackInfo.name} cover`}
+              className="me-1 rounded flex-shrink-0 object-fit-cover"
+            />
+          </div>
+          <div className="flex-grow-1 ms-2">
+            <div className="fw-bold">{trackInfo.name}</div>
+            <div className="text-muted">
+              {trackInfo.artists.map((artist) => artist.name).join(", ")}
+            </div>
+          </div>
         </div>
       </li>
     ))}

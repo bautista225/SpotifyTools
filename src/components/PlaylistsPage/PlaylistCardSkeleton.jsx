@@ -32,7 +32,7 @@ const PlaylistCardSkeleton = () => (
 
             {/* Placeholder para el número de canciones */}
             <div className="placeholder-glow">
-              <span className="placeholder col-5"></span>
+              <span className="placeholder col-2"></span>
             </div>
           </div>
 

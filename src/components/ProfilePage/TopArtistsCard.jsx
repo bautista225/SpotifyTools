@@ -15,26 +15,31 @@ const TopArtistsList = ({ userTopArtists }) => (
         key={artistInfo.id}
         className="list-group-item text-bg-light d-flex align-items-center"
       >
-        <div className="text-center me-3" style={{ width: "1rem" }}>
-          {index + 1}
-        </div>
-        <img
-          src={artistInfo.images[0]?.url || "https://via.placeholder.com/64"}
-          width={60}
-          height={60}
-          style={{
-            width: "60px",
-            height: "60px",
-            objectFit: "cover", // Mantiene las proporciones y recorta las partes sobrantes.
-          }}
-          alt={`${artistInfo.name}`}
-          className="me-3 rounded flex-shrink-0"
-        />
-        <div className="flex-grow-1">
-          <p className="mb-1 fw-bold">{artistInfo.name}</p>
-          <p className="mb-0 text-muted">
+        <div className="d-flex align-items-center">
+          <div
+            className="text-center me-3 flex-shrink-0"
+            style={{ width: "0.7rem" }}
+          >
+            {index + 1}
+          </div>
+          <div className="flex-shrink-0">
+            <img
+              src={
+                artistInfo.images[0]?.url ||
+                "https://via.placeholder.com/64"
+              }
+              width={60}
+              height={60}
+              alt={`${artistInfo.name} cover`}
+              className="me-1 rounded flex-shrink-0 object-fit-cover"
+            />
+          </div>
+          <div className="flex-grow-1 ms-2">
+            <div className="fw-bold">{artistInfo.name}</div>
+            <div className="text-muted">
             {artistInfo.genres.slice(0, 3).join(", ")}
-          </p>
+            </div>
+          </div>
         </div>
       </li>
     ))}

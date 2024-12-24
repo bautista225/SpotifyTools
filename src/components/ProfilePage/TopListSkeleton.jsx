@@ -5,7 +5,7 @@ const TopListSkeleton = () => (
         key={index}
         className="list-group-item text-bg-light d-flex align-items-center"
       >
-        <div className="text-center me-3" style={{ width: "1rem" }}>
+        <div className="text-center me-2" style={{ width: "1rem" }}>
           <p className="mb-0 text-muted placeholder-glow">
             <span className="placeholder col-12"></span>
           </p>

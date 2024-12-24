@@ -1,5 +1,22 @@
 import { useParams } from "react-router-dom";
 import usePlaylistInfo from "../../hooks/usePlaylistInfo";
+import PlaylistInfo from "./PlaylistInfo";
+import PlaylistTracks from "./PlaylistTracks";
+import { useState } from "react";
+
+const orderTypes = {
+  MostRecent: { value: "MostRecent", label: "recent added" },
+  MostOld: { value: "MostOld", label: "older added" },
+  NameAZ: { value: "NameAZ", label: "name A-Z" },
+  NameZA: { value: "NameZA", label: "name Z-A" },
+  ArtistAZ: { value: "ArtistAZ", label: "artist A-Z" },
+  ArtistZA: { value: "ArtistZA", label: "artist Z-A" },
+  MostDuration: { value: "MostDuration", label: "most duration" },
+  LessDuration: { value: "LessDuration", label: "less duration" },
+  MostPopular: { value: "MostPopular", label: "most popular" },
+  LessPopular: { value: "LessPopular", label: "less popular" },
+  Default: { value: "Default", label: "default" },
+};
 
 const ManagePlaylistPage = () => {
   const params = useParams();
@@ -13,14 +30,15 @@ const ManagePlaylistPage = () => {
     revertOrder,
   ] = usePlaylistInfo(playlistUri);
 
-  const handlePreview = (event) => {
-    event.preventDefault();
-
-    virtualSortTracks("MostRecent");
-  };
-
   const handleRevertOrder = async (event) => {
     event.preventDefault();
+
+    if (
+      !window.confirm(
+        "This action will modify your spotify playlist.\nAre you sure to do it?"
+      )
+    )
+      return;
 
     await revertOrder();
   };
@@ -28,47 +46,69 @@ const ManagePlaylistPage = () => {
   const handlePublishNewOrder = async (event) => {
     event.preventDefault();
 
+    if (
+      !window.confirm(
+        "This action will modify your spotify playlist.\nAre you sure to do it?"
+      )
+    )
+      return;
+
     await postVirtualOrder();
   };
 
-  if (!playlistInfo) return <div>Loading tracklists...</div>;
+  const [selectedOrder, setSelectedOrder] = useState("Default");
+
+  const handleOrderChange = (event) => {
+    setSelectedOrder(event.target.value);
+    virtualSortTracks(event.target.value);
+  };
 
   return (
-    <>
-      <h2>{playlistInfo.name}</h2>
-      <p>Number of songs: {playlistInfo.tracks.total}</p>
-      <button onClick={handlePreview}>Order by most recent added</button>
-      <button onClick={handlePublishNewOrder}>Publish new order</button>
-      <button onClick={handleRevertOrder}>Revert order change</button>
-      <ol>
-        {trackList.map((t) => (
-          <li key={t.track.id}>
-            <div style={{ display: "flex", flexDirection: "row" }}>
-              <img
-                src={
-                  t.track.album.images[0]?.url ||
-                  "https://via.placeholder.com/64"
-                }
-                width={60}
-                height={60}
-                alt={`${t.track.name} cover`}
-              />
-              <div
-                style={{
-                  marginLeft: "10px",
-                }}
+    <div className="container mt-5 pt-4">
+      <PlaylistInfo playlistInfo={playlistInfo} />
+      <div className="container text-center my-4">
+        <div className="row g-3">
+          <div className="col-md-5">
+            <div className="d-flex justify-content-center align-items-center">
+              <p className="fw-semibold m-0 text-nowrap me-3">Order by</p>
+              <select
+                value={selectedOrder}
+                onChange={handleOrderChange}
+                className="form-select w-auto rounded-pill outline-dark"
+                aria-label="Default select example"
               >
-                <p>
-                  <strong>{t.track.name}</strong>
-                </p>
-                <p>{t.track.artists.map((artist) => artist.name).join(", ")}</p>
-                <p>Added: {t.added_at.replace("T", " ").replace("Z", "")}</p>
-              </div>
+                <option disabled>Select an order</option>
+                {Object.values(orderTypes).map((op) => (
+                  <option
+                    key={op.value}
+                    value={op.value}
+                    data-mdb-icon={<i className="bi bi-sort-alpha-down"></i>}
+                  >
+                    {op.label}
+                  </option>
+                ))}
+              </select>
             </div>
-          </li>
-        ))}
-      </ol>
-    </>
+          </div>
+          <div className="col-md-7">
+            <button
+              className="btn btn-md btn-outline-success rounded-pill me-3"
+              onClick={handlePublishNewOrder}
+            >
+              <i className="bi bi-file-arrow-up"></i> Publish new order
+            </button>
+            <button
+              className="btn btn-md btn-outline-danger rounded-pill"
+              onClick={handleRevertOrder}
+            >
+              <i className="bi bi-arrow-counterclockwise"></i> Revert
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <PlaylistTracks trackList={trackList} />
+    </div>
   );
 };
 

@@ -5,6 +5,17 @@ import SpotifyService from "../services/spotify";
 const orderTypes = {
   MostRecent: (a, b) => new Date(b.added_at) - new Date(a.added_at),
   MostOld: (a, b) => new Date(a.added_at) - new Date(b.added_at),
+  NameAZ: (a, b) => a.track.name.localeCompare(b.track.name),
+  NameZA: (a, b) => b.track.name.localeCompare(a.track.name),
+  ArtistAZ: (a, b) =>
+    a.track.artists[0].name.localeCompare(b.track.artists[0].name),
+  ArtistZA: (a, b) =>
+    b.track.artists[0].name.localeCompare(a.track.artists[0].name),
+  MostDuration: (a, b) => b.track.duration_ms - a.track.duration_ms,
+  LessDuration: (a, b) => a.track.duration_ms - b.track.duration_ms,
+  MostPopular: (a, b) => b.track.popularity - a.track.popularity,
+  LessPopular: (a, b) => a.track.popularity - b.track.popularity,
+  Default: () => 1,
 };
 
 const sortTracks = (trackList, orderType) => {
@@ -46,10 +57,11 @@ const fetchRemainingTracks = (currentInfo, playlistUri) => {
     playlistUri,
     50,
     currentInfo.tracks.items.length
-  ).then(({ items, next }) => {
-    currentInfo.items = currentInfo.items.concat(items);
-    currentInfo.next = next;
-    return fetchRemainingTracks(currentInfo);
+  ).then((response) => {
+    console.log({ response, currentInfo });
+    currentInfo.tracks.items = currentInfo.tracks.items.concat(response.items);
+    currentInfo.next = response.next;
+    return fetchRemainingTracks(currentInfo, playlistUri);
   });
 };
 
@@ -169,7 +181,7 @@ const usePlaylistInfo = (playlistUri) => {
       .catch((error) => {
         handleError(error);
       });
-  }, [handleError, playlistUri]);
+  }, [handleError]);
 
   const virtualSortTracks = (orderType) => {
     const sortedPlaylistTracks = sortTracks(

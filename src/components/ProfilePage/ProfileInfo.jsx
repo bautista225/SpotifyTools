@@ -44,70 +44,72 @@ const ProfileInfo = () => {
   };
 
   return (
-    <div className="row">
-      <div className="col-md-6 text-center">
-        <Image
-          src={userProfile.images[0].url}
-          roundedCircle
-          fluid
-          style={{
-            width: "250px",
-            height: "250px",
-            objectFit: "cover", // Mantiene las proporciones y recorta las partes sobrantes.
-          }}
-        />
-      </div>
-      <div className="col-md-6 text-center text-md-start d-flex flex-column justify-content-between">
-        <h1 className="my-4 mt-md-0">Welcome, {userProfile.display_name}!</h1>
-        <div className="container text-center">
-          <div className="row gy-4 row-cols-3">
-            <div className="col">
-              <div className="fw-semibold">{userProfile.product}</div>
-              <div>Subscription</div>
-            </div>
-            <div className="col">
-              <div className="fw-semibold">{userProfile.followers.total}</div>
-              <div>Followers</div>
-            </div>
-            <div className="col">
-              <div className="fw-semibold">{userProfile.country}</div>
-              <div>Country</div>
-            </div>
-            <div className="col" onClick={handleChangeTimeRange}>
-              <div className="fw-semibold">
-                {timeRange[currentTimeRange].label}{" "}
-                <i className="bi bi-arrow-repeat"></i>
+    <div className="px-3 px-md-5 py-5 mb-4 bg-light rounded-3">
+      <div className="row">
+        <div className="col-md-6 text-center">
+          <Image
+            src={userProfile.images[0].url}
+            roundedCircle
+            fluid
+            style={{
+              width: "250px",
+              height: "250px",
+              objectFit: "cover", // Mantiene las proporciones y recorta las partes sobrantes.
+            }}
+          />
+        </div>
+        <div className="col-md-6 text-center text-md-start d-flex flex-column justify-content-between">
+          <h1 className="my-4 mt-md-0">Welcome, {userProfile.display_name}!</h1>
+          <div className="container text-center">
+            <div className="row gy-4 row-cols-3">
+              <div className="col">
+                <div className="fw-semibold">{userProfile.product}</div>
+                <div>Subscription</div>
               </div>
-              <div>Listened</div>
-            </div>
-            <div className="col">
-              {isUserTopTracksLoading && <ProfileInfoBadgeSkeleton />}
-              {!isUserTopTracksLoading && (
-                <>
-                  <div className="fw-semibold">{userTopTracks?.total}</div>
-                  <div>Tracks</div>
-                </>
-              )}
-            </div>
-            <div className="col">
-              {isUserTopArtistsLoading && <ProfileInfoBadgeSkeleton />}
-              {!isUserTopArtistsLoading && (
-                <>
-                  <div className="fw-semibold">{userTopArtists?.total}</div>
-                  <div>Artists</div>
-                </>
-              )}
+              <div className="col">
+                <div className="fw-semibold">{userProfile.followers.total}</div>
+                <div>Followers</div>
+              </div>
+              <div className="col">
+                <div className="fw-semibold">{userProfile.country}</div>
+                <div>Country</div>
+              </div>
+              <div className="col" onClick={handleChangeTimeRange}>
+                <div className="fw-semibold">
+                  {timeRange[currentTimeRange].label}{" "}
+                  <i className="bi bi-arrow-repeat"></i>
+                </div>
+                <div>Listened</div>
+              </div>
+              <div className="col">
+                {isUserTopTracksLoading && <ProfileInfoBadgeSkeleton />}
+                {!isUserTopTracksLoading && (
+                  <>
+                    <div className="fw-semibold">{userTopTracks?.total}</div>
+                    <div>Tracks</div>
+                  </>
+                )}
+              </div>
+              <div className="col">
+                {isUserTopArtistsLoading && <ProfileInfoBadgeSkeleton />}
+                {!isUserTopArtistsLoading && (
+                  <>
+                    <div className="fw-semibold">{userTopArtists?.total}</div>
+                    <div>Artists</div>
+                  </>
+                )}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="mt-4 text-center">
-          <button
-            className="btn btn-md btn-outline-dark rounded-pill"
-            onClick={() => navigate("/playlists")}
-          >
-            <i className="bi bi-music-note-list"></i> Manage playlists
-          </button>
+          <div className="mt-4 text-center">
+            <button
+              className="btn btn-md btn-outline-dark rounded-pill"
+              onClick={() => navigate("/playlists")}
+            >
+              <i className="bi bi-music-note-list"></i> View playlists
+            </button>
+          </div>
         </div>
       </div>
     </div>

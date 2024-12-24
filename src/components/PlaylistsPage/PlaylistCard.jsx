@@ -13,7 +13,7 @@ const PlaylistCard = ({ pl }) => {
               width={60}
               height={60}
               alt={`${pl.name} cover`}
-              className="me-3 rounded"
+              className="me-3 rounded flex-shrink-0 object-fit-cover"
             />
           ) : (
             <div
