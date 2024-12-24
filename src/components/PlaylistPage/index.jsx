@@ -23,7 +23,7 @@ const PlaylistPage = () => {
     <>
       <div className="container mt-5 pt-4">
         <div className="px-3 px-md-5 py-5 mb-4 bg-light rounded-3 text-center">
-          <h1 className="my-4 mt-md-0">
+          <h1 className="my-4 my-md-0">
             You have a total of {userPlaylists.total} playlists
           </h1>
         </div>
@@ -54,7 +54,7 @@ const PlaylistPage = () => {
                     <div className="">
                       <p>Owner: {pl.owner.display_name}</p>
                       <p>Number of tracks: {pl.tracks.total}</p>
-
+                      {/* Podríamos añadir los generos de las canciones de la playlist */}
                       <button
                         className="btn btn-md btn-outline-dark rounded-pill"
                         onClick={() => navigate(`/playlists/${pl.id}`)}
