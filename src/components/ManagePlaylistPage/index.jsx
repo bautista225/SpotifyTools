@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import usePlaylistInfo from "../../hooks/usePlaylistInfo";
 
-const ManagePlaylist = () => {
+const ManagePlaylistPage = () => {
   const params = useParams();
   const playlistUri = params.id;
   const [
@@ -72,4 +72,4 @@ const ManagePlaylist = () => {
   );
 };
 
-export default ManagePlaylist;
+export default ManagePlaylistPage;

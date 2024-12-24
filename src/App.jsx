@@ -3,7 +3,7 @@ import Home from "./components/HomePage";
 import AuthenticationPage from "./components/AuthenticationPage";
 import ProfilePage from "./components/ProfilePage";
 import PlaylistsPage from "./components/PlaylistsPage";
-import ManagePlaylist from "./components/PlaylistsPage/ManagePlaylist";
+import ManagePlaylist from "./components/ManagePlaylistPage";
 import { useSessionInitialization, useUserInitialization } from "./hooks";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
