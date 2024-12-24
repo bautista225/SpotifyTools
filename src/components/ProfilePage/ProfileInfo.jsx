@@ -75,7 +75,8 @@ const ProfileInfo = () => {
             </div>
             <div className="col" onClick={handleChangeTimeRange}>
               <div className="fw-semibold">
-                {timeRange[currentTimeRange].label}
+                {timeRange[currentTimeRange].label}{" "}
+                <i className="bi bi-arrow-repeat"></i>
               </div>
               <div>Listened</div>
             </div>
