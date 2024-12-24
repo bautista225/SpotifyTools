@@ -25,7 +25,7 @@ const TopTracksList = ({ userTopTracks }) => (
           width={60}
           height={60}
           alt={`${trackInfo.name} cover`}
-          className="me-3 rounded"
+          className="me-3 rounded flex-shrink-0"
         />
         <div className="flex-grow-1">
           <p className="mb-1 fw-bold">{trackInfo.name}</p>

@@ -28,7 +28,7 @@ const TopArtistsList = ({ userTopArtists }) => (
             objectFit: "cover", // Mantiene las proporciones y recorta las partes sobrantes.
           }}
           alt={`${artistInfo.name}`}
-          className="me-3 rounded"
+          className="me-3 rounded flex-shrink-0"
         />
         <div className="flex-grow-1">
           <p className="mb-1 fw-bold">{artistInfo.name}</p>
