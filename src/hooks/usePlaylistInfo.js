@@ -70,7 +70,8 @@ const changePlaylistOrder = async (
   targetTrackList,
   originalTrackList,
   initialSnapshot_id,
-  onError
+  onError,
+  progressModal
 ) => {
   let snapshot_id = initialSnapshot_id;
 
@@ -91,6 +92,12 @@ const changePlaylistOrder = async (
         order: newOrder,
         playlistUri,
       });
+      progressModal.setProgressValue(
+        ((index + 1) * 100) / originalTrackList.length
+      );
+      progressModal.setProgressLabel(
+        `${index + 1}/${originalTrackList.length}`
+      );
       console.log({ oldPosition, index, date: track.added_at, response });
 
       // Recoger el id de estado de la nueva playlist
@@ -109,7 +116,8 @@ const changePlaylistOrder = async (
 const revertPlaylistOrder = async (
   playlistInfo,
   modifiedTrackList,
-  onError
+  onError,
+  progressModal
 ) => {
   const playlistUri = playlistInfo.id;
 
@@ -119,7 +127,7 @@ const revertPlaylistOrder = async (
 
   if (!localStorageItem)
     return alert(
-      `Not previous order available to recover for the playlist ${playlistInfo.name}`
+      `Not previous order backup available to recover for the playlist ${playlistInfo.name}`
     );
 
   console.log("this is: ", JSON.parse(localStorageItem));
@@ -127,12 +135,18 @@ const revertPlaylistOrder = async (
   const { originalTrackList, old_snapshot_id } = JSON.parse(localStorageItem);
   let { snapshot_id } = await SpotifyService.getPlaylistInfo(playlistUri);
 
+  if (originalTrackList.length != modifiedTrackList.length)
+    return alert(
+      `The playlist ${playlistInfo.name} has added/removed songs since the last order backup`
+    );
+
   await changePlaylistOrder(
     playlistUri,
     originalTrackList,
     modifiedTrackList,
     snapshot_id,
-    onError
+    onError,
+    progressModal
   );
 
   const updatedPlaylistInfo = await SpotifyService.getPlaylistInfo(playlistUri);
@@ -142,23 +156,34 @@ const revertPlaylistOrder = async (
 const postNewPlaylistOrder = async (
   playlistInfo,
   modifiedTrackList,
-  onError
+  onError,
+  progressModal
 ) => {
   const originalTrackList = playlistInfo.tracks.items;
   const playlistUri = playlistInfo.id;
   const originalSnapshot_id = playlistInfo.snapshot_id;
 
-  window.localStorage.setItem(
-    `ManagePlaylist_OriginalOrder_${playlistUri}`,
-    JSON.stringify({ originalTrackList, originalSnapshot_id })
+  const orderBackupJSON = window.localStorage.getItem(
+    `ManagePlaylist_OriginalOrder_${playlistUri}`
   );
+
+  if (
+    !orderBackupJSON ||
+    JSON.parse(orderBackupJSON).originalTrackList.length !==
+      originalTrackList.length
+  )
+    window.localStorage.setItem(
+      `ManagePlaylist_OriginalOrder_${playlistUri}`,
+      JSON.stringify({ originalTrackList, originalSnapshot_id })
+    );
 
   await changePlaylistOrder(
     playlistUri,
     modifiedTrackList,
     originalTrackList,
     originalSnapshot_id,
-    onError
+    onError,
+    progressModal
   );
 
   const updatedPlaylistInfo = await SpotifyService.getPlaylistInfo(playlistUri);
@@ -193,25 +218,35 @@ const usePlaylistInfo = (playlistUri) => {
     setTrackList(sortedPlaylistTracks);
   };
 
-  const revertOrder = async () => {
+  const revertOrder = async (progressModal) => {
     if (SpotifyService.hasTokenExpired()) {
       return handleError(SpotifyService.TOKEN_EXPIRATION_ERROR);
     }
 
     const { updatedPlaylistInfo, originalTrackList } =
-      await revertPlaylistOrder(playlistInfo, trackList, handleError);
+      await revertPlaylistOrder(
+        playlistInfo,
+        trackList,
+        handleError,
+        progressModal
+      );
 
     setPlaylistInfo(updatedPlaylistInfo);
     setTrackList(originalTrackList);
   };
 
-  const postVirtualOrder = async () => {
+  const postVirtualOrder = async (progressModal) => {
     if (SpotifyService.hasTokenExpired()) {
       return handleError(SpotifyService.TOKEN_EXPIRATION_ERROR);
     }
 
     const { updatedPlaylistInfo, modifiedTrackList } =
-      await postNewPlaylistOrder(playlistInfo, trackList, handleError);
+      await postNewPlaylistOrder(
+        playlistInfo,
+        trackList,
+        handleError,
+        progressModal
+      );
 
     setPlaylistInfo(updatedPlaylistInfo);
     setTrackList(modifiedTrackList);
