@@ -5,7 +5,7 @@ const Home = () => (
     <div className="text-center">
       <h1 className="display-1">Welcome to Spotify Tools!</h1>
       <h2 className="display-6">
-        Explore your profile stats and manage your playlists with ease.
+        Explore your profile stats and manage your playlists easily.
       </h2>
       <ConnectWithSpotifyButton />
     </div>
