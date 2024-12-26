@@ -12,7 +12,7 @@ const ProfileInfoSkeleton = () => (
           }}
         ></div>
       </div>
-      <div className="col-md-6 text-center text-md-start d-flex flex-column justify-content-between">
+      <div className="col-md-6 text-center d-flex flex-column justify-content-between">
         <div className="my-4 mt-md-0">
           <div
             className="bg-secondary bg-opacity-25 rounded"

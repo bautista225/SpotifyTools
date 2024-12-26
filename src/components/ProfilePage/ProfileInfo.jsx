@@ -44,7 +44,7 @@ const ProfileInfo = () => {
   };
 
   return (
-    <div className="px-3 px-md-5 py-5 mb-4 bg-light rounded-3">
+    <div className="px-3 px-lg-5 py-5 mb-4 bg-light rounded-3">
       <div className="row">
         <div className="col-md-6 text-center">
           <Image
@@ -58,7 +58,7 @@ const ProfileInfo = () => {
             }}
           />
         </div>
-        <div className="col-md-6 text-center text-md-start d-flex flex-column justify-content-between">
+        <div className="col-md-6 text-center d-flex flex-column justify-content-between">
           <h1 className="my-4 mt-md-0">Welcome, {userProfile.display_name}!</h1>
           <div className="container text-center">
             <div className="row gy-4 row-cols-3">
