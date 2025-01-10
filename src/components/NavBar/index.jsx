@@ -12,7 +12,6 @@ function NavBar({ user }) {
   const logout = useLogout();
 
   const handleLogoutButtonClick = () => {
-    closeOffCanvas();
     logout();
   };
 
@@ -50,7 +49,14 @@ function NavBar({ user }) {
                 </Nav.Link>
               </Nav>
               <Nav className="justify-content-end flex-grow-1 pe-3">
-                <Nav.Link onClick={handleLogoutButtonClick}>Logout</Nav.Link>
+                <Nav.Link
+                  onClick={() => {
+                    closeOffCanvas();
+                    handleLogoutButtonClick();
+                  }}
+                >
+                  Logout
+                </Nav.Link>
               </Nav>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
