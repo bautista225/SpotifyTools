@@ -8,6 +8,8 @@ import { useSessionInitialization, useUserInitialization } from "./hooks";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import NavBar from "./components/NavBar";
+import { PrivateRoute } from "./components/PrivateRoute";
+import NotFound from "./components/NotFoundPage";
 
 function App() {
   const { session, user } = useSelector(({ session, user }) => ({
@@ -25,25 +27,22 @@ function App() {
     if (session.access_token && !user) userInitializer();
   }, [session.access_token, user]);
 
-  console.log("la sesion es: ", session);
   return (
     <>
       <NavBar user={user} />
-      {!session.access_token ? (
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/authToken" element={<AuthenticationPage />} />
-        </Routes>
-      ) : (
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/authToken" element={<AuthenticationPage />} />
-          <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/playlists" element={<PlaylistsPage />} />
-          <Route path="/playlists/:id" element={<ManagePlaylist />} />
-          <Route path="/*" element={<h3>404 Page Not Found</h3>} />
-        </Routes>
-      )}
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/authToken" element={<AuthenticationPage />} />
+        <Route
+          path="/profile"
+          element={<PrivateRoute element={<ProfilePage />} />}
+        />
+        <Route path="/playlists" element={<PrivateRoute />}>
+          <Route index element={<PlaylistsPage />} />
+          <Route path=":id" element={<ManagePlaylist />} />
+        </Route>
+        <Route path="*" element={<NotFound />} />
+      </Routes>
     </>
   );
 }
