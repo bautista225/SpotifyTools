@@ -1,5 +1,4 @@
 import { useUserPlaylists } from "../../hooks";
-import FooterBar from "../FooterBar/index";
 import PlaylistsInfo from "./PlaylistsInfo";
 import PlaylistCard from "./PlaylistCard";
 import PlaylistCardSkeleton from "./PlaylistCardSkeleton";
@@ -34,8 +33,6 @@ const PlaylistsPage = () => {
               <PlaylistCardSkeleton key={index} />
             ))}
         </div>
-
-        <FooterBar />
       </div>
     </>
   );

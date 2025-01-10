@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import NavBar from "./components/NavBar";
 import { PrivateRoute } from "./components/PrivateRoute";
 import NotFound from "./components/NotFoundPage";
+import FooterBar from "./components/FooterBar";
 
 function App() {
   const { session, user } = useSelector(({ session, user }) => ({
@@ -28,7 +29,8 @@ function App() {
   }, [session.access_token, user]);
 
   return (
-    <>
+    <div className="d-flex vh-100">
+    <div className="d-flex w-100 h-100 mx-auto flex-column">
       <NavBar user={user} />
       <Routes>
         <Route path="/" element={<Home />} />
@@ -43,7 +45,9 @@ function App() {
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </>
+      <FooterBar />
+    </div>
+    </div>
   );
 }
 

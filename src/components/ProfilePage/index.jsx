@@ -1,6 +1,5 @@
 import TopTracksCard from "./TopTracksCard";
 import TopArtistsCard from "./TopArtistsCard";
-import FooterBar from "../FooterBar";
 import ProfileInfo from "./ProfileInfo";
 
 const ProfilePage = () => {
@@ -17,8 +16,6 @@ const ProfilePage = () => {
           <TopArtistsCard />
         </div>
       </div>
-
-      <FooterBar />
     </div>
   );
 };
