@@ -4,7 +4,7 @@ import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { Link } from "react-router-dom";
 import { useLogout } from "../../hooks";
-import { Button } from "react-bootstrap";
+import { useRef } from "react";
 
 // Cómo puedo poner los botones en la navbar centrados en vez de que estén totalmente a la derecha
 
@@ -12,8 +12,12 @@ function NavBar({ user }) {
   const logout = useLogout();
 
   const handleLogoutButtonClick = () => {
+    closeOffCanvas();
     logout();
   };
+
+  const offCanvasRef = useRef();
+  const closeOffCanvas = () => offCanvasRef.current.backdrop.click();
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary mb-3 fixed-top">
@@ -29,6 +33,7 @@ function NavBar({ user }) {
             id={`offcanvasNavbar`}
             aria-labelledby={`offcanvasNavbarLabel`}
             placement="start"
+            ref={offCanvasRef}
           >
             <Offcanvas.Header closeButton>
               <Offcanvas.Title id={`offcanvasNavbarLabel`}>
@@ -37,10 +42,10 @@ function NavBar({ user }) {
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="justify-content-start flex-grow-1 pe-3">
-                <Nav.Link as={Link} to="/profile">
+                <Nav.Link as={Link} to="/profile" onClick={closeOffCanvas}>
                   Profile
                 </Nav.Link>
-                <Nav.Link as={Link} to="/playlists">
+                <Nav.Link as={Link} to="/playlists" onClick={closeOffCanvas}>
                   Playlists
                 </Nav.Link>
               </Nav>
