@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useErrorHandler } from ".";
 import SpotifyService from "../services/spotify";
+import { devConsoleLog } from "../utils";
 
 const orderTypes = {
   MostRecent: (a, b) => new Date(b.added_at) - new Date(a.added_at),
@@ -48,7 +49,7 @@ const getTrackOldPosition = (track, oldList) => {
 };
 
 const fetchRemainingTracks = (currentInfo, playlistUri) => {
-  console.log(currentInfo);
+  devConsoleLog(currentInfo);
   if (currentInfo.tracks.items.length >= currentInfo.tracks.total) {
     return Promise.resolve(currentInfo);
   }
@@ -58,7 +59,7 @@ const fetchRemainingTracks = (currentInfo, playlistUri) => {
     50,
     currentInfo.tracks.items.length
   ).then((response) => {
-    console.log({ response, currentInfo });
+    devConsoleLog({ response, currentInfo });
     currentInfo.tracks.items = currentInfo.tracks.items.concat(response.items);
     currentInfo.next = response.next;
     return fetchRemainingTracks(currentInfo, playlistUri);
@@ -98,7 +99,7 @@ const changePlaylistOrder = async (
       progressModal.setProgressLabel(
         `${index + 1}/${originalTrackList.length}`
       );
-      console.log({ oldPosition, index, date: track.added_at, response });
+      devConsoleLog({ oldPosition, index, date: track.added_at, response });
 
       // Recoger el id de estado de la nueva playlist
       // para revertir el orden de la siguiente canción sobre esa.
@@ -130,7 +131,7 @@ const revertPlaylistOrder = async (
       `Not previous order backup available to recover for the playlist ${playlistInfo.name}`
     );
 
-  console.log("this is: ", JSON.parse(localStorageItem));
+  devConsoleLog("this is: ", JSON.parse(localStorageItem));
 
   const { originalTrackList, old_snapshot_id } = JSON.parse(localStorageItem);
   let { snapshot_id } = await SpotifyService.getPlaylistInfo(playlistUri);
@@ -199,7 +200,7 @@ const usePlaylistInfo = (playlistUri) => {
     SpotifyService.getPlaylistInfo(playlistUri)
       .then((playlistInfo) => fetchRemainingTracks(playlistInfo, playlistUri))
       .then((playlistInfo) => {
-        console.log({ playlistInfo });
+        devConsoleLog({ playlistInfo });
         setPlaylistInfo(playlistInfo);
         setTrackList([...playlistInfo.tracks.items]);
       })
@@ -214,7 +215,7 @@ const usePlaylistInfo = (playlistUri) => {
       orderType
     );
 
-    console.log(sortedPlaylistTracks);
+    devConsoleLog(sortedPlaylistTracks);
     setTrackList(sortedPlaylistTracks);
   };
 

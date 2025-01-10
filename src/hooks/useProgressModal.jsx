@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Modal from "react-bootstrap/Modal";
 import ProgressBar from "react-bootstrap/ProgressBar";
 import { unstable_usePrompt as usePrompt } from "react-router-dom";
+import { devConsoleLog } from "../utils";
 
 const useProgressModal = () => {
   const [showModal, setShowModal] = useState(false);
@@ -46,7 +47,7 @@ const useProgressModal = () => {
 
   useEffect(() => {
     const handleBeforeUnload = (event) => {
-      console.log("Leaving the page");
+      devConsoleLog("Leaving the page");
       if (showModal) {
         event.preventDefault();
         // Algunos navegadores requieren esta línea para mostrar el mensaje.
@@ -61,7 +62,7 @@ const useProgressModal = () => {
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      console.log("Unmounting the component");
+      devConsoleLog("Unmounting the component");
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [showModal]);

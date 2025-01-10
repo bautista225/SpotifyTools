@@ -11,6 +11,7 @@ import NavBar from "./components/NavBar";
 import { PrivateRoute } from "./components/PrivateRoute";
 import NotFound from "./components/NotFoundPage";
 import FooterBar from "./components/FooterBar";
+import { devConsoleLog } from "./utils";
 
 function App() {
   const { session, user } = useSelector(({ session, user }) => ({
@@ -23,10 +24,14 @@ function App() {
   useEffect(() => {
     sessionInitializer();
   }, []);
-
+  
   useEffect(() => {
     if (session.access_token && !user) userInitializer();
   }, [session.access_token, user]);
+
+
+  
+  devConsoleLog("sessionInitializer", session);
 
   return (
     <div className="d-flex vh-100">

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import SpotifyService from "../services/spotify";
 import { initializeUser, logoutUser } from "../reducers/user";
+import { devConsoleLog } from "../utils";
 
 export const useSessionInitialization = () => {
   const dispatch = useDispatch();
@@ -166,7 +167,7 @@ export const useUserPlaylists = () => {
         return fetchRemainingPlaylists(playlistsInfo);
       })
       .then((finalPlaylistsInfo) => {
-        console.log({ finalPlaylistsInfo });
+        devConsoleLog({ finalPlaylistsInfo });
         setUserPlaylists(finalPlaylistsInfo);
       })
       .catch((error) => {

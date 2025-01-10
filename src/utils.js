@@ -36,9 +36,9 @@ const parseExpiresInToDate = (expires_in) => {
 }
 
 export const getAuthorizationTokenFromHash = () => {
-  console.log('aqui')
+  devConsoleLog('aqui')
   const hash = window.location.hash;
-  console.log(window.location)
+  devConsoleLog(window.location)
   const params = new URLSearchParams(hash.slice(1)); // Remove the '#' at the beginning
 
   const tokenInfo = {
@@ -49,3 +49,7 @@ export const getAuthorizationTokenFromHash = () => {
   };
   return tokenInfo;
 };
+
+export const devConsoleLog = (...args) => {
+  import.meta.env.DEV && console.log(...args)
+}

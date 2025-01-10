@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import storageService from "../services/storage";
 import SpotifyService from "../services/spotify";
+import { devConsoleLog } from "../utils";
 
 const initialState = {
   access_token: null,
@@ -34,7 +35,7 @@ export const saveAuthenticatedSession = (session) => {
 
 export const logoutSession = () => {
   return (dispatch) => {
-    console.log('Limpiando sesion')
+    devConsoleLog('Limpiando sesion')
     storageService.removeSession();
     SpotifyService.setTokenInfo(initialState);
     dispatch(removeSession());
@@ -44,11 +45,11 @@ export const logoutSession = () => {
 export const restartSession = (onExpiredSession) => {
   return (dispatch) => {
     const session = storageService.loadSession();
-    console.log("La sesión es:", session);
+    devConsoleLog("La sesión es:", session);
     if (session) {
       SpotifyService.setTokenInfo(session);
       if (SpotifyService.hasTokenExpired()) {
-        console.log('Voy a limpiar la sesion por token cadudado')
+        devConsoleLog('Voy a limpiar la sesion por token cadudado')
         dispatch(logoutSession())
         onExpiredSession()
       } else {

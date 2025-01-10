@@ -8,6 +8,7 @@ import {
 } from "../../hooks";
 import { useState } from "react";
 import ProfileInfoBadgeSkeleton from "./ProfileInfoBadgeSkeleton";
+import { devConsoleLog } from "../../utils";
 
 const timeRange = {
   long_term: { value: "long_term", label: "last year" },
@@ -25,9 +26,9 @@ const ProfileInfo = () => {
 
   const navigate = useNavigate();
 
-  console.log("ProfileInfo - userprofile: ", userProfile);
-  console.log("ProfileInfo - userTopTracks: ", userTopTracks);
-  console.log("ProfileInfo - userTopArtists: ", userTopArtists);
+  devConsoleLog("ProfileInfo - userprofile: ", userProfile);
+  devConsoleLog("ProfileInfo - userTopTracks: ", userTopTracks);
+  devConsoleLog("ProfileInfo - userTopArtists: ", userTopArtists);
 
   if (isUserProfileLoading) return <ProfileInfoSkeleton />;
 

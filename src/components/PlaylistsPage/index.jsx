@@ -4,12 +4,13 @@ import PlaylistCard from "./PlaylistCard";
 import PlaylistCardSkeleton from "./PlaylistCardSkeleton";
 import { useState } from "react";
 import FilterInput from "./FilterInput";
+import { devConsoleLog } from "../../utils";
 
 const PlaylistsPage = () => {
   const [userPlaylists] = useUserPlaylists();
   const [filter, setFilter] = useState();
 
-  console.log(userPlaylists);
+  devConsoleLog(userPlaylists);
 
   return (
     <>
