@@ -4,25 +4,27 @@ import Navbar from "react-bootstrap/Navbar";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { Link } from "react-router-dom";
 import { useLogout } from "../../hooks";
-import { useRef } from "react";
+import { useState } from "react";
 
 // Cómo puedo poner los botones en la navbar centrados en vez de que estén totalmente a la derecha
 
 function NavBar({ user }) {
+  const [showOffcanvas, setShowOffcanvas] = useState(false)
   const logout = useLogout();
 
   const handleLogoutButtonClick = () => {
+    hideOffcanvas()
     logout();
   };
 
-  const offCanvasRef = useRef();
-  const closeOffCanvas = () => offCanvasRef.current.backdrop.click();
+  const hideOffcanvas = () => {setShowOffcanvas(false)}
+  const toggleOffcanvas = () => {setShowOffcanvas(!showOffcanvas)}
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary mb-3 fixed-top">
       <Container fluid className="justify-content-start">
         {user && (
-          <Navbar.Toggle aria-controls={`offcanvasNavbar`} className="me-3" />
+          <Navbar.Toggle aria-controls={`offcanvasNavbar`} className="me-3" onClick={toggleOffcanvas}/>
         )}
         <Navbar.Brand as={Link} to="/" className="bg-body-tertiary">
           <i className="bi bi-spotify" /> Spotify tools
@@ -32,7 +34,7 @@ function NavBar({ user }) {
             id={`offcanvasNavbar`}
             aria-labelledby={`offcanvasNavbarLabel`}
             placement="start"
-            ref={offCanvasRef}
+            show={showOffcanvas}
           >
             <Offcanvas.Header closeButton>
               <Offcanvas.Title id={`offcanvasNavbarLabel`}>
@@ -41,22 +43,15 @@ function NavBar({ user }) {
             </Offcanvas.Header>
             <Offcanvas.Body>
               <Nav className="justify-content-start flex-grow-1 pe-3">
-                <Nav.Link as={Link} to="/profile" onClick={closeOffCanvas}>
+                <Nav.Link as={Link} to="/profile" onClick={hideOffcanvas}>
                   Profile
                 </Nav.Link>
-                <Nav.Link as={Link} to="/playlists" onClick={closeOffCanvas}>
+                <Nav.Link as={Link} to="/playlists" onClick={hideOffcanvas}>
                   Playlists
                 </Nav.Link>
               </Nav>
               <Nav className="justify-content-end flex-grow-1 pe-3">
-                <Nav.Link
-                  onClick={() => {
-                    closeOffCanvas();
-                    handleLogoutButtonClick();
-                  }}
-                >
-                  Logout
-                </Nav.Link>
+                <Nav.Link onClick={handleLogoutButtonClick}>Logout</Nav.Link>
               </Nav>
             </Offcanvas.Body>
           </Navbar.Offcanvas>
