@@ -78,7 +78,8 @@ const TopTracksCard = () => {
           ))}
         </select>
       </div>
-      {(isUserTopTracksLoading || !userTopTracks) && <TopListSkeleton />}
+      {(isUserTopTracksLoading || !userTopTracks) && <TopListSkeleton /> ||
+        <TopTracksList userTopTracks={userTopTracks} />}
     </div>
   );
 };
