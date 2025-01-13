@@ -4,7 +4,7 @@ import ProgressBar from "react-bootstrap/ProgressBar";
 import { unstable_usePrompt as usePrompt } from "react-router-dom";
 import { devConsoleLog } from "../utils";
 
-const useProgressModal = () => {
+const useProgressModal = (showProgress=true, isStaticModal=true) => {
   const [showModal, setShowModal] = useState(false);
   const [progressValue, setProgressValue] = useState(0);
   const [progressLabel, setProgressLabel] = useState("");
@@ -29,17 +29,17 @@ const useProgressModal = () => {
       <Modal
         show={showModal}
         onHide={close}
-        backdrop="static"
+        backdrop = {isStaticModal && "static"}
         keyboard={false}
         centered
       >
         <Modal.Body>
           <p>{description}</p>
-          <ProgressBar
+          {showProgress && <ProgressBar
             variant="dark"
             now={progressValue}
             label={progressLabel}
-          />
+          />}
         </Modal.Body>
       </Modal>
     </>

@@ -1,8 +1,14 @@
 import TopTracksCard from "./TopTracksCard";
 import TopArtistsCard from "./TopArtistsCard";
 import ProfileInfo from "./ProfileInfo";
+import useProgressModal from "../../hooks/useProgressModal";
+import { useUserProfile } from "../../hooks";
 
 const ProfilePage = () => {
+  const progressModal = useProgressModal(false);
+
+  useUserProfile(progressModal);
+
   return (
     <div className="container mt-5 pt-4">
       <ProfileInfo />
@@ -16,6 +22,7 @@ const ProfilePage = () => {
           <TopArtistsCard />
         </div>
       </div>
+      {progressModal.modalComponent}
     </div>
   );
 };

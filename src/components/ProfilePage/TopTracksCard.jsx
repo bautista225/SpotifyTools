@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TopListSkeleton from "./TopListSkeleton";
 import { useUserTopTracks } from "../../hooks";
+import { devConsoleLog } from "../../utils";
 
 const timeRange = {
   long_term: { value: "long_term", label: "last year" },
@@ -57,6 +58,8 @@ const TopTracksCard = () => {
     loadUserTopTracks(event.target.value, 10);
   };
 
+  devConsoleLog({userTopTracks})
+
   return (
     <div className="h-100 px-4 px-lg-5 py-3 bg-light rounded-3">
       <div className="d-flex justify-content-center align-items-center my-4">
@@ -75,10 +78,7 @@ const TopTracksCard = () => {
           ))}
         </select>
       </div>
-      {isUserTopTracksLoading && <TopListSkeleton />}
-      {!isUserTopTracksLoading && (
-        <TopTracksList userTopTracks={userTopTracks} />
-      )}
+      {(isUserTopTracksLoading || !userTopTracks) && <TopListSkeleton />}
     </div>
   );
 };

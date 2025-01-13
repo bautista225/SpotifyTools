@@ -30,7 +30,7 @@ const ProfileInfo = () => {
   devConsoleLog("ProfileInfo - userTopTracks: ", userTopTracks);
   devConsoleLog("ProfileInfo - userTopArtists: ", userTopArtists);
 
-  if (isUserProfileLoading) return <ProfileInfoSkeleton />;
+  if (isUserProfileLoading || !userProfile) return <ProfileInfoSkeleton />;
 
   const handleChangeTimeRange = (event) => {
     event.preventDefault();

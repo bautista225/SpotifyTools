@@ -75,10 +75,9 @@ const TopArtistsCard = () => {
           ))}
         </select>
       </div>
-      {isUserTopArtistsLoading && <TopListSkeleton />}
-      {!isUserTopArtistsLoading && (
+      {(isUserTopArtistsLoading || !userTopArtists)&& <TopListSkeleton /> ||
         <TopArtistsList userTopArtists={userTopArtists} />
-      )}
+      }
     </div>
   );
 };

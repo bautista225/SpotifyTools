@@ -41,7 +41,7 @@ export const useLogout = () => {
 export const useErrorHandler = () => {
   const logout = useLogout();
 
-  const handleError = (error) => {
+  const handleError = (error, infoModal = null) => {
     if (error.status === 401) {
       console.log(error.message);
       logout();
@@ -55,13 +55,20 @@ export const useErrorHandler = () => {
         console.log(message);
         logout();
       }
+    } else if (error.status === 403) {
+      devConsoleLog({ infoModal });
+      infoModal.setDescription(
+        "The user is not registered in the Spotify developer dashboard.\nAsk the repository owner to add it for using Spotify Tools app."
+      );
+      infoModal.open();
+      // logout();
     } else console.error(error);
   };
 
   return handleError;
 };
 
-export const useUserProfile = () => {
+export const useUserProfile = (infoModal = null) => {
   const handleError = useErrorHandler();
   const [userProfile, setUserProfile] = useState(null);
   const [isUserProfileLoading, setIsUserProfileLoading] = useState(true);
@@ -75,7 +82,7 @@ export const useUserProfile = () => {
       })
       .catch((error) => {
         setIsUserProfileLoading(false);
-        handleError(error);
+        handleError(error, infoModal);
       });
   }, [handleError]);
 
