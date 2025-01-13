@@ -1,6 +1,8 @@
 # Spotify Tools
 ## Overview
-Responsive SPA for managin playlists and profile statistics for a Spotify Account. Developed with React and Redux.
+Responsive SPA for managin playlists and profile statistics for a Spotify Account. 
+
+Developed with React and Redux.
 
 ## Key features
 - Profile statistics (last year, last 6 months and last 4 weeks):
