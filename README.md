@@ -1,3 +1,4 @@
+[![Publish to Github Pages](https://github.com/bautista225/SpotifyTools/actions/workflows/deploy.yml/badge.svg)](https://github.com/bautista225/SpotifyTools/actions/workflows/deploy.yml)
 # Spotify Tools
 ## Overview
 Responsive SPA for managin playlists and profile statistics for a Spotify Account. 
