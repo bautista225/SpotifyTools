@@ -12,9 +12,9 @@
 </p>
 
 ## Overview
-Responsive SPA for managin playlists and profile statistics for a Spotify Account. 
+With the initial intention of sorting a long playlist by most recent added, this application was born. 
 
-Developed with React and Redux.
+A responsive SPA for managin playlists and profile statistics for a Spotify Account, developed with React and Redux.
 
 ## Key features
 - Profile statistics (last year, last 6 months and last 4 weeks):
