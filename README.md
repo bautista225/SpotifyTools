@@ -1,5 +1,16 @@
+# 🎧 Spotify Tools
+![React](https://img.shields.io/badge/react-%2320232a.svg?style=flat-square&logo=react&logoColor=%2361DAFB)
+![Redux](https://img.shields.io/badge/redux-%23593d88.svg?style=flat-square&logo=redux&logoColor=white)
+![JavaScript](https://img.shields.io/badge/javascript-%23323330.svg?style=flat-square&logo=javascript&logoColor=%23F7DF1E)
+![React Router](https://img.shields.io/badge/React_Router-CA4245?style=flat-square&logo=react-router&logoColor=white)
+![Bootstrap](https://img.shields.io/badge/bootstrap-%238511FA.svg?style=flat-square&logo=bootstrap&logoColor=white)
+![Vite](https://img.shields.io/badge/vite-%23646CFF.svg?style=flat-square&logo=vite&logoColor=white)
 [![Publish to Github Pages](https://github.com/bautista225/SpotifyTools/actions/workflows/deploy.yml/badge.svg)](https://github.com/bautista225/SpotifyTools/actions/workflows/deploy.yml)
-# Spotify Tools
+
+<p align="center">
+  <img alt="Spotify Tools - Home" src="https://github.com/user-attachments/assets/d7c9841c-2c8a-4ba1-8b8c-fee34f1d7c05" />
+</p>
+
 ## Overview
 Responsive SPA for managin playlists and profile statistics for a Spotify Account. 
 
