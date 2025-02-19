@@ -11,12 +11,12 @@
   <img alt="Spotify Tools - Home" src="https://github.com/user-attachments/assets/d7c9841c-2c8a-4ba1-8b8c-fee34f1d7c05" />
 </p>
 
-## Overview
+## 🔎 Overview
 With the initial intention of sorting a long playlist by most recent added, this application was born. 
 
 A responsive SPA for managin playlists and profile statistics for a Spotify Account, developed with React and Redux.
 
-## Key features
+## 🌱 Key features
 - Profile statistics (last year, last 6 months and last 4 weeks):
   - Number of tracks and artists listened.
   - Top 10 tracks.
@@ -30,13 +30,13 @@ A responsive SPA for managin playlists and profile statistics for a Spotify Acco
     - Artist name
   - Get playlist's songs by Spotify popularity.
 
-## Screenshots
+## 📖 Screenshots
 ![Home](https://github.com/user-attachments/assets/ab90b224-0c34-42da-a620-42f3cdac14c4)
 ![Profile](https://github.com/user-attachments/assets/d575cea2-239e-43f7-9feb-4120550c7c82)
 ![Manage playlists](https://github.com/user-attachments/assets/ad830e82-9c98-47ca-b09d-4c7c07e4a3f4)
 ![Playlist details](https://github.com/user-attachments/assets/33509388-4652-4708-b13f-0e4013bdabc9)
 
-## Usage
+## 🖥 Installation in local
 ### Obtaining a Spotify Client ID
 Login into Spotify Web API
 In the dashboard, create a new app adding the following scope: 
