@@ -12,7 +12,7 @@
 </p>
 
 ## 🔎 Overview
-With the initial intention of sorting a long playlist by most recent added, this application was born. 
+With the initial intention of sorting a long playlist by most recent added tracks, this application was born. 
 
 A responsive SPA for managin playlists and profile statistics for a Spotify Account, developed with React and Redux.
 
@@ -66,3 +66,6 @@ npm run dev
 ```
 ## Limitations
 Since 2022 the Spotify API has limitations in the number of requests and the user accounts able to login through a Developer Client ID, as it needs to add the user account in the developer panel. If you want to use it by the Github Pages link, don't hesitate to ask me 😉
+
+## ✨ Contributions
+Contributions are welcome! If you have ideas to enhance the Spotify Tools App —whether it’s adding new features, improving the design, or expanding the content— feel free to submit a pull request. You can also share suggestions or feedback to help make this project even better!
