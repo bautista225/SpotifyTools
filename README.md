@@ -69,3 +69,8 @@ Since 2022 the Spotify API has limitations in the number of requests and the use
 
 ## ✨ Contributions
 Contributions are welcome! If you have ideas to enhance the Spotify Tools App —whether it’s adding new features, improving the design, or expanding the content— feel free to submit a pull request. You can also share suggestions or feedback to help make this project even better!
+
+## ⭐ Support
+If you find Spotify Tools App helpful or you like what we're doing, please consider giving the repository a star! It's a quick way to show your support for this project.
+
+
