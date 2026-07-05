@@ -133,7 +133,7 @@ const revertPlaylistOrder = async (
 
   devConsoleLog("this is: ", JSON.parse(localStorageItem));
 
-  const { originalTrackList, old_snapshot_id } = JSON.parse(localStorageItem);
+  const { originalTrackList } = JSON.parse(localStorageItem);
   let { snapshot_id } = await SpotifyService.getPlaylistInfo(playlistUri);
 
   if (originalTrackList.length != modifiedTrackList.length)

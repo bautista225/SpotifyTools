@@ -1,5 +1,5 @@
-import { useDispatch } from "react-redux";
-import { logoutSession, restartSession } from "../reducers/session";
+import { useDispatch, useSelector } from "react-redux";
+import { logoutSession, refreshSession, restartSession } from "../reducers/session";
 import { useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useState } from "react";
 import SpotifyService from "../services/spotify";
@@ -25,6 +25,34 @@ export const useUserInitialization = () => {
   return () => {
     dispatch(initializeUser());
   };
+};
+
+// Proactively renews the access token shortly before it expires while the app
+// stays open, so long sessions don't get bounced to the login screen mid-use.
+export const useSessionAutoRefresh = () => {
+  const dispatch = useDispatch();
+  const session = useSelector((state) => state.session);
+  const handleError = useErrorHandler();
+
+  useEffect(() => {
+    if (!session.access_token || !session.refresh_token) return;
+
+    const refreshMarginSeconds = 60;
+    const nowSeconds = Date.now() / 1000;
+    const secondsUntilRefresh = Math.max(
+      0,
+      session.expiresAt - refreshMarginSeconds - nowSeconds
+    );
+
+    const timeoutId = setTimeout(() => {
+      dispatch(refreshSession(session)).catch((error) => {
+        devConsoleLog("Auto refresh failed", error);
+        handleError(SpotifyService.TOKEN_EXPIRATION_ERROR);
+      });
+    }, secondsUntilRefresh * 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [session.access_token, session.expiresAt, session.refresh_token]);
 };
 
 export const useLogout = () => {

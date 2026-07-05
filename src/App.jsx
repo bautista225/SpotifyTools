@@ -4,7 +4,11 @@ import AuthenticationPage from "./components/AuthenticationPage";
 import ProfilePage from "./components/ProfilePage";
 import PlaylistsPage from "./components/PlaylistsPage";
 import ManagePlaylist from "./components/ManagePlaylistPage";
-import { useSessionInitialization, useUserInitialization } from "./hooks";
+import {
+  useSessionAutoRefresh,
+  useSessionInitialization,
+  useUserInitialization,
+} from "./hooks";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import NavBar from "./components/NavBar";
@@ -20,6 +24,7 @@ function App() {
   }));
   const sessionInitializer = useSessionInitialization();
   const userInitializer = useUserInitialization();
+  useSessionAutoRefresh();
 
   useEffect(() => {
     sessionInitializer();

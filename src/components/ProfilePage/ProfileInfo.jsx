@@ -17,7 +17,7 @@ const timeRange = {
 };
 
 const ProfileInfo = () => {
-  const [userProfile, isUserProfileLoading, loadUserProfile] = useUserProfile();
+  const [userProfile, isUserProfileLoading] = useUserProfile();
   const [userTopTracks, isUserTopTracksLoading, loadUserTopTracks] =
     useUserTopTracks(timeRange.long_term.value, 10);
   const [userTopArtists, isUserTopArtistsLoading, loadUserTopArtists] =

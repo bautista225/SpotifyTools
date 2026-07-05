@@ -15,7 +15,7 @@ const ManagePlaylistPage = () => {
   const [
     playlistInfo,
     trackList,
-    loadPlaylistInfo,
+    ,
     virtualSortTracks,
     postVirtualOrder,
     revertOrder,

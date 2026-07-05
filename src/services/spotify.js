@@ -2,7 +2,40 @@ import axios from "axios";
 import * as utils from "../utils";
 
 const baseUrl = "https://api.spotify.com/v1";
+const accountsTokenUrl = "https://accounts.spotify.com/api/token";
 const TOKEN_EXPIRATION_ERROR = { status: 401, message: "Token expired" };
+
+// Exchanges the authorization code returned on the redirect for an access token
+// (Authorization Code with PKCE). Returns the raw token endpoint response.
+const exchangeCodeForToken = async (code, codeVerifier) => {
+  const body = new URLSearchParams({
+    client_id: import.meta.env.VITE_CLIENT_ID,
+    grant_type: "authorization_code",
+    code,
+    redirect_uri: utils.getRedirectUri(),
+    code_verifier: codeVerifier,
+  });
+
+  const response = await axios.post(accountsTokenUrl, body, {
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  });
+  return response.data;
+};
+
+// Requests a fresh access token using the stored refresh token. Spotify may or
+// may not return a new refresh_token; when absent the caller keeps the old one.
+const refreshAccessToken = async (refreshToken) => {
+  const body = new URLSearchParams({
+    client_id: import.meta.env.VITE_CLIENT_ID,
+    grant_type: "refresh_token",
+    refresh_token: refreshToken,
+  });
+
+  const response = await axios.post(accountsTokenUrl, body, {
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  });
+  return response.data;
+};
 
 let tokenInfo = {
   access_token: null,
@@ -123,6 +156,8 @@ const reorderPlaylistItem = async (trackItemInfo) => {
 export default {
   setTokenInfo,
   hasTokenExpired,
+  exchangeCodeForToken,
+  refreshAccessToken,
   TOKEN_EXPIRATION_ERROR,
   getUserProfile,
   getUserTopTracks,
