@@ -70,22 +70,27 @@ const changePlaylistOrder = async (
   playlistUri,
   targetTrackList,
   originalTrackList,
-  initialSnapshot_id,
+  initialSnapshot_id, // ya no se encadena; se mantiene por compatibilidad de firma
   onError,
   progressModal
 ) => {
-  let snapshot_id = initialSnapshot_id;
-
+  // Modelo local del orden actual de la playlist. Cada operación de reorden se
+  // aplica sobre este espejo, que mantenemos sincronizado con moveElementInArray.
   let updatedTracklist = [...originalTrackList];
 
   for (const [index, track] of [...targetTrackList].reverse().entries()) {
     const oldPosition = getTrackOldPosition(track, updatedTracklist);
 
+    // IMPORTANTE: no se envía snapshot_id. La API de Spotify tiene un bug
+    // conocido por el que el snapshot_id devuelto no se actualiza a tiempo en
+    // operaciones secuenciales rápidas; encadenarlo desincroniza el estado y
+    // desplaza bloques enteros de canciones. Al omitirlo, cada reorden se aplica
+    // sobre el estado vigente de la playlist, que es justo lo que queremos ya
+    // que ejecutamos las operaciones de una en una y en serie.
     const newOrder = {
       range_start: oldPosition,
       insert_before: 0,
       range_length: 1,
-      snapshot_id,
     };
 
     try {
@@ -101,12 +106,8 @@ const changePlaylistOrder = async (
       );
       devConsoleLog({ oldPosition, index, date: track.added_at, response });
 
-      // Recoger el id de estado de la nueva playlist
-      // para revertir el orden de la siguiente canción sobre esa.
-      snapshot_id = response.snapshot_id;
-
-      // Realizar yo el nuevo orden en local en vez de solicitarlo
-      // para evitar baneo por horas (retryAfter)!!
+      // Reflejar el nuevo orden en local en vez de re-descargarlo,
+      // para evitar el rate-limit de la API (retryAfter).
       updatedTracklist = moveElementInArray(updatedTracklist, oldPosition, 0);
     } catch (error) {
       return onError(error);

@@ -52,6 +52,40 @@ const hasTokenExpired = (margin = 10 * 60) => {
   return tokenInfo.expiresAt - margin < (Date.now() / 1000);
 };
 
+// --- Response normalization (Feb 2026 API migration) ---
+// Spotify renamed the playlist track container from `tracks` to `items` and the
+// per-item `track` subfield to `item`. To stay compatible with both the old and
+// new shapes, the service always exposes the legacy shape to the rest of the app
+// (playlist.tracks paging object, and item.track), preserving added_at untouched.
+
+// Ensures a playlist item exposes `.track`, reading from the new `.item` field
+// when present. Keeps added_at and every other field intact.
+const normalizePlaylistItem = (item) => {
+  if (!item) return item;
+  if (item.track) return item;
+  if (item.item) return { ...item, track: item.item };
+  return item;
+};
+
+// Ensures a tracks paging object exposes normalized items under `.items`.
+const normalizeTracksPaging = (paging) => {
+  if (!paging) return paging;
+  return {
+    ...paging,
+    items: Array.isArray(paging.items)
+      ? paging.items.map(normalizePlaylistItem)
+      : paging.items,
+  };
+};
+
+// Normalizes a full playlist object: the paging object may arrive as `items`
+// (new) instead of `tracks` (old). Always exposes it under `.tracks`.
+const normalizePlaylist = (playlist) => {
+  if (!playlist) return playlist;
+  const tracksPaging = playlist.tracks || playlist.items;
+  return { ...playlist, tracks: normalizeTracksPaging(tracksPaging) };
+};
+
 const getUserProfile = async () => {
   const config = {
     headers: {
@@ -105,7 +139,13 @@ const getUserPlaylists = async (limit, offset = 0) => {
   const params = utils.encodeQueryParams({ limit, offset });
 
   const response = await axios.get(`${baseUrl}/me/playlists?${params}`, config);
-  return response.data;
+  const data = response.data;
+  // Each simplified playlist may expose its track count under `items` (new) or
+  // `tracks` (old); normalize so the UI can always read `.tracks.total`.
+  if (Array.isArray(data.items)) {
+    data.items = data.items.map(normalizePlaylist);
+  }
+  return data;
 };
 
 const getPlaylistInfo = async (playlistUri) => {
@@ -119,7 +159,7 @@ const getPlaylistInfo = async (playlistUri) => {
     `${baseUrl}/playlists/${playlistUri}`,
     config
   );
-  return response.data;
+  return normalizePlaylist(response.data);
 };
 
 const getPlaylistTracks = async (playlistUri, limit, offset) => {
@@ -132,10 +172,10 @@ const getPlaylistTracks = async (playlistUri, limit, offset) => {
   const params = utils.encodeQueryParams({ limit, offset });
 
   const response = await axios.get(
-    `${baseUrl}/playlists/${playlistUri}/tracks?${params}`,
+    `${baseUrl}/playlists/${playlistUri}/items?${params}`,
     config
   );
-  return response.data;
+  return normalizeTracksPaging(response.data);
 };
 
 const reorderPlaylistItem = async (trackItemInfo) => {
@@ -146,7 +186,7 @@ const reorderPlaylistItem = async (trackItemInfo) => {
   };
 
   const response = await axios.put(
-    `${baseUrl}/playlists/${trackItemInfo.playlistUri}/tracks`,
+    `${baseUrl}/playlists/${trackItemInfo.playlistUri}/items`,
     trackItemInfo.order,
     config
   );
